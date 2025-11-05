@@ -1,3 +1,13 @@
+/**
+ * Show or hide the Polkadot address input field based on anchor type.
+ * @param {string} anchorType - The selected anchor type ("mock", "google", "polkadot", etc.)
+ */
+export function togglePolkadotAddressField(anchorType) {
+  const polkadotAddressContainer = document.getElementById("polkadotAddressContainer");
+  if (polkadotAddressContainer) {
+    polkadotAddressContainer.style.display = anchorType === "polkadot" ? "block" : "none";
+  }
+}
 // popup-ui.js
 
 export function setStatusMessage(message, type = "info", recovery = "") {

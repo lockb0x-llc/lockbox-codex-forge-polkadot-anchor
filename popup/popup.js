@@ -177,7 +177,11 @@ import {
   getGoogleAuthToken,
   setGoogleAuthToken,
   removeGoogleAuthToken,
+  fetchGoogleUserProfile,
 } from "../lib/google-auth-utils.js";
+import { readFile, extractPageContent } from "../lib/file-utils.js";
+import { summarizeText } from "../lib/ai.js";
+import { setStatusMessage, updateStepper } from "./popup-ui.js";
 
 let googleAuthToken = null;
 
@@ -200,6 +204,29 @@ if (authStatus && authStatus.parentNode) {
 
 async function updateAuthUI() {
   const anchorIsGoogle = anchorType && anchorType.value === "google";
+  const anchorIsPolkadot = anchorType && anchorType.value === "polkadot";
+  
+  if (anchorIsPolkadot) {
+    // Hide Google controls when Polkadot is selected
+    googleSignInBtn.style.display = "none";
+    googleLogOutBtn.style.display = "none";
+    userProfileDiv.style.display = "block";
+    
+    // Display Polkadot connection status
+    chrome.storage.local.get(["polkadotProfile"], (result) => {
+      if (result && result.polkadotProfile && result.polkadotProfile.address) {
+        authStatus.textContent = "Polkadot Connected";
+        authStatus.style.color = "#00796b";
+        userProfileDiv.innerHTML = `<span style="font-weight:bold;">Polkadot Account:</span> <span style="color:#616161;font-family:monospace;">${result.polkadotProfile.address}</span>`;
+      } else {
+        authStatus.textContent = "Polkadot Not Connected";
+        authStatus.style.color = "#c62828";
+        userProfileDiv.innerHTML = `<span style="color:#c62828;">No Polkadot profile found. Using default mock address.</span>`;
+      }
+    });
+    return;
+  }
+  
   if (!anchorIsGoogle) {
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "none";
@@ -428,6 +455,21 @@ entryForm.addEventListener("submit", async (e) => {
           });
         } else {
           resolve({ type: "google", email: "unknown" });
+        }
+      });
+    });
+  } else if (anchorType && anchorType.value === "polkadot") {
+    // Try to get Polkadot profile from chrome.storage.local
+    createdBy = await new Promise((resolve) => {
+      chrome.storage.local.get(["polkadotProfile"], (result) => {
+        if (result && result.polkadotProfile && result.polkadotProfile.address) {
+          resolve({
+            type: "polkadot",
+            address: result.polkadotProfile.address,
+            name: result.polkadotProfile.name || "Polkadot User",
+          });
+        } else {
+          resolve({ type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }); // Default mock address
         }
       });
     });

@@ -1,80 +1,54 @@
-# Lockb0x Codex Forge Zip Archive Workflow
+# Lockb0x Codex Forge Zip Archive Workflow (Polkadot Anchor Fork)
 
 ## Overview
 
-The Zip Archive feature enhances Lockb0x Codex Forge by packaging the payload and codex entry into a single, verifiable archive. This solidifies the lockb0x protocol's handling and authentication process, ensuring robust provenance and integrity for digital artifacts.
+The Zip Archive feature in this fork supports anchoring and validation on both Google Drive and the Polkadot blockchain. Codex Entries now record anchor details from either (or both) sources, and the workflow supports flexible multi-chain provenance.
+
+---
 
 ## Workflow Steps
 
 1. **Payload Preparation**
-   - The payload is obtained from either file upload or content extraction.
-   - Payload metadata, identity metadata, and creator metadata are included in the initial codex entry.
-   - The codex entry includes its own metadata: `id`, `version`, `datetime` (initial creation), and an initial signature covering all metadata.
-
+   - The payload (file or extracted web content) is combined with identity and metadata as specified by the selected anchor type (Google, Mock, or Polkadot).
 2. **Zip Archive Creation**
-   - The payload is added to a new zip file (the "Zip Archive") using the features in `lib/zip-archive.js`.
-   - No compression is applied; files are stored as-is for integrity (STORE mode).
-   - The archive is encrypted with AES-256 encryption using:
-     - The current user's email address if they are authenticated and have selected the Google Anchor
-     - The password "mock" if they are using the Mock Anchor
-   - The current Lockb0x Codex Entry JSON (with `storage.location`, `anchor.tx`, and `anchor.url` excluded) is added as an archive-level comment in the zip.
-   - The zip contains:
-     - The payload file (with its original filename)
-     - `codex-entry.json` (with `storage.location`, `anchor.tx`, and `anchor.url` excluded)
-
-3. **Upload to Google Drive**
-   - The Zip Archive is uploaded to Google Drive (if Google Anchor is selected).
-   - The Lockb0x Codex Entry is updated with storage and anchor metadata (protocol, location, integrity proof, tx, url).
-   - A new signature is generated and appended to the signature block, covering the updated codex entry.
-
+   - Created as before using `lib/zip-archive.js`, with archive-level comments for provenance.
+   - Archive is encrypted using Google account email, mock password, or as future work, with Polkadot/address-linked key.
+3. **Multi-Anchor Options**
+   - If Google Drive anchor selected, archive is uploaded to Drive.
+   - If Polkadot anchor selected, integrity proofs are submitted to chain via `anchorPolkadot()`; Codex Entry updated with anchor, tx, and chain URL (see [polkadot-enhancement](./polkadot-enhancement)).
+   - Both anchors may be included in Codex Entry as `anchors[]`.
 4. **Final Codex Entry Handling**
-   - The final Lockb0x Codex Entry (with updated storage, anchor, and dual signatures) is uploaded to Google Drive.
-   - The final codex entry and zip archive are both made available for download or copying to clipboard in the popup UI.
+   - Anchor details and identity from Google/Polkadot recording.
+   - Codex Entry and archive available for download, copied to clipboard, UI review.
+
+---
 
 ## Implementation Details
 
-- The zip archive is created using the `createCodexZipArchive` function in `lib/zip-archive.js`.
-- Archive-level comment contains the full final codex entry JSON for provenance and verification.
-- The codex entry inside the zip excludes `storage.location`, `anchor.tx`, and `anchor.url` because these are not known at the time the Zip Archive is created, since it has not been uploaded yet.
-- The zip archive is encrypted with AES-256 encryption using either the user's Google email or the password 'mock'.
-- No compression is applied - files are stored using the STORE method to preserve integrity.
-- All cryptographic operations (hashing, signing) follow the lockb0x protocol.
-- The workflow ensures that every step is verifiable and auditable.
-- Dual signature approach:
-  1. First signature: covers initial codex entry before zip creation
-  2. Second signature: covers updated codex entry after zip upload with storage metadata
+- See [polkadot-enhancement](./polkadot-enhancement) for code and workflow references for Polkadot integration.
+- Codex Entry builder supports both anchor types and merges identity info.
+- UI elements allow anchor type selection, address entry, and transaction feedback.
 
-## Benefits
-
-- **Integrity:** Payload and codex entry are packaged together, reducing risk of tampering.
-- **Encryption:** Archive is password-protected with AES-256 encryption for security.
-- **Provenance:** Archive-level comment and metadata provide a clear audit trail with dual signatures.
-- **Interoperability:** Zip format is widely supported and easy to verify.
-- **Automation:** The workflow is designed for seamless integration with Google Drive and future cloud providers.
+---
 
 ## Verification Process
 
 To verify a Lockb0x Codex zip archive:
-
-1. **Extract the Archive:** Use the password (Google email or 'mock') to decrypt and extract the zip
-2. **Verify Payload:** Compare the extracted payload file with the original
-3. **Check Codex Entry:** The `codex-entry.json` in the zip should match the final codex entry except for:
-   - `storage.location` (not present in zip version)
-   - `anchor.tx` (not present in zip version)
-   - `anchor.url` (not present in zip version)
-4. **Verify Archive Comment:** Extract and parse the archive-level comment to get the full final codex entry
-5. **Hash Verification:** Compute SHA-256 hash of the payload and compare with `integrity_proof` in the codex entry
-6. **Signature Verification:** Validate both ES256 signatures:
-   - First signature: validates initial codex entry
-   - Second signature: validates updated codex entry with storage metadata
-
-## Future Enhancements
-
-- Support for additional cloud storage providers (e.g., OneDrive)
-- Enhanced metadata tagging and search
-- Automated verification tools for zip archives
-- UI improvements for archive creation and download
+- Extract using password.
+- Compare payload file and `codex-entry.json`; validate `anchors[]` array for Google and/or Polkadot details.
+- Review archive-level provenance comment.
+- Compute integrity proof hash, verify chain and Drive anchors, validate signatures.
+- Multi-anchor verification now supported (see [polkadot-enhancement](./polkadot-enhancement)).
 
 ---
 
-For implementation details, see `lib/zip-archive.js` and the main workflow in `background.js` and `popup.js`.
+## Future Enhancements
+
+- Signed Polkadot extrinsics for authoritative integrity proof.
+- Polkadot address-linked encryption as an option.
+- UI improvements for anchor selection and chain integration feedback.
+- Audit, test, and demo resources for multi-anchor deployments.
+
+---
+
+**For architectural integration, see [polkadot-enhancement](./polkadot-enhancement) and ensure all new workflows are documented and tested accordingly.**

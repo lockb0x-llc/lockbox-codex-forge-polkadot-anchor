@@ -1,5 +1,7 @@
 // popup.js - Handles popup UI logic for Lockb0x Protocol Codex Forge
 
+import { getPolkadotProfile } from "../lib/polkadot-utils.js";
+
 // Store zip blob globally for download
 let currentZipBlob = null;
 
@@ -212,18 +214,17 @@ async function updateAuthUI() {
     googleLogOutBtn.style.display = "none";
     userProfileDiv.style.display = "block";
     
-    // Display Polkadot connection status
-    chrome.storage.local.get(["polkadotProfile"], (result) => {
-      if (result && result.polkadotProfile && result.polkadotProfile.address) {
-        authStatus.textContent = "Polkadot Connected";
-        authStatus.style.color = "#00796b";
-        userProfileDiv.innerHTML = `<span style="font-weight:bold;">Polkadot Account:</span> <span style="color:#616161;font-family:monospace;">${result.polkadotProfile.address}</span>`;
-      } else {
-        authStatus.textContent = "Polkadot Not Connected";
-        authStatus.style.color = "#c62828";
-        userProfileDiv.innerHTML = `<span style="color:#c62828;">No Polkadot profile found. Using default mock address.</span>`;
-      }
-    });
+    // Display Polkadot connection status using utility function
+    const polkadotProfile = await getPolkadotProfile();
+    if (polkadotProfile && polkadotProfile.address) {
+      authStatus.textContent = "Polkadot Connected";
+      authStatus.style.color = "#00796b";
+      userProfileDiv.innerHTML = `<span style="font-weight:bold;">Polkadot Account:</span> <span style="color:#616161;font-family:monospace;">${polkadotProfile.address}</span>`;
+    } else {
+      authStatus.textContent = "Polkadot Not Connected";
+      authStatus.style.color = "#c62828";
+      userProfileDiv.innerHTML = `<span style="color:#c62828;">No Polkadot profile found. Using default mock address.</span>`;
+    }
     return;
   }
   
@@ -459,20 +460,17 @@ entryForm.addEventListener("submit", async (e) => {
       });
     });
   } else if (anchorType && anchorType.value === "polkadot") {
-    // Try to get Polkadot profile from chrome.storage.local
-    createdBy = await new Promise((resolve) => {
-      chrome.storage.local.get(["polkadotProfile"], (result) => {
-        if (result && result.polkadotProfile && result.polkadotProfile.address) {
-          resolve({
-            type: "polkadot",
-            address: result.polkadotProfile.address,
-            name: result.polkadotProfile.name || "Polkadot User",
-          });
-        } else {
-          resolve({ type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }); // Default mock address
-        }
-      });
-    });
+    // Get Polkadot profile using utility function
+    const polkadotProfile = await getPolkadotProfile();
+    if (polkadotProfile && polkadotProfile.address) {
+      createdBy = {
+        type: "polkadot",
+        address: polkadotProfile.address,
+        name: polkadotProfile.name || "Polkadot User",
+      };
+    } else {
+      createdBy = { type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }; // Default mock address
+    }
   }
   const isLargeFile = bytes && bytes.length > LARGE_FILE_THRESHOLD;
   if (isLargeFile) {

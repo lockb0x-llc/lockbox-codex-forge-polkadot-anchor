@@ -63,9 +63,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             url: codexEntry.anchor?.url,
           };
           const driveToken = msg.payload.googleAuthToken;
+          const password = msg.payload.password;
           let zipResult = null;
           try {
-            zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken });
+            zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken, password });
             console.log('[background] Zip workflow result (small file):', zipResult);
           } catch (err) {
             zipResult = { error: err.message };
@@ -127,9 +128,10 @@ chrome.runtime.onConnect.addListener(function (port) {
           url: codexEntry.anchor?.url,
         };
         const driveToken = metadata.googleAuthToken;
+        const password = metadata.password;
         let zipResult = null;
         try {
-          zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken });
+          zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken, password });
           console.log('[background] Zip workflow result (large file):', zipResult);
         } catch (err) {
           zipResult = { error: err.message };

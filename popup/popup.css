@@ -1,3 +1,11 @@
+/* Polkadot address input field and container */
+#polkadotAddressContainer {
+  display: none;
+  margin-top: 8px;
+}
+#polkadotAddress {
+  width: 100%;
+}
 /* Step fieldset spacing */
 .step-fieldset {
   margin-bottom: 16px;

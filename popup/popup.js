@@ -362,6 +362,19 @@ if (anchorType && googleSignInBtn && authStatus) {
     updateAuthUI();
   });
   updateAuthUI();
+  const polkadotAddressContainer = document.getElementById("polkadotAddressContainer");
+  if (polkadotAddressContainer) {
+    polkadotAddressContainer.style.display = anchorType && anchorType.value === "polkadot" ? "block" : "none";
+  }
+  // Initial state
+  anchorType.addEventListener("change", () => {
+    // Show/hide Polkadot address input field
+    const anchorIsPolkadot = anchorType && anchorType.value === "polkadot";
+    if (polkadotAddressContainer) {
+      polkadotAddressContainer.style.display = anchorIsPolkadot ? "block" : "none";
+    }
+    updateAuthUI();
+  });
 }
 
 // Handle Google sign-in
@@ -441,8 +454,9 @@ entryForm.addEventListener("submit", async (e) => {
     );
     return;
   }
-  // Get createdBy info
+  // Get createdBy info and determine password
   let createdBy = { type: "mock" };
+  let password = "mock";
   if (anchorType && anchorType.value === "google" && googleAuthToken) {
     // Try to get user profile from chrome.storage.local
     createdBy = await new Promise((resolve) => {
@@ -459,6 +473,7 @@ entryForm.addEventListener("submit", async (e) => {
         }
       });
     });
+    password = createdBy.email || "unknown";
   } else if (anchorType && anchorType.value === "polkadot") {
     // Get Polkadot profile using utility function
     const polkadotProfile = await getPolkadotProfile();
@@ -468,8 +483,10 @@ entryForm.addEventListener("submit", async (e) => {
         address: polkadotProfile.address,
         name: polkadotProfile.name || "Polkadot User",
       };
+      password = polkadotProfile.address;
     } else {
-      createdBy = { type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }; // Default mock address
+      createdBy = { type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" };
+      password = createdBy.address;
     }
   }
   const isLargeFile = bytes && bytes.length > LARGE_FILE_THRESHOLD;
@@ -530,6 +547,7 @@ entryForm.addEventListener("submit", async (e) => {
           anchorType: anchorType ? anchorType.value : "mock",
           googleAuthToken: googleAuthToken,
           createdBy,
+          password,
         },
       },
       function (response) {

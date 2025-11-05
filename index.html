@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Lockb0x Codex Multi-Anchor Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #00796b;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        button {
+            margin: 5px 0 15px 0;
+            padding: 5px;
+        }
+
+        .anchor-links a {
+            margin-right: 1em;
+        }
+
+        .result {
+            background: #f8f8f8;
+            padding: 1em;
+            border-radius: 4px;
+            margin-top: 1em;
+        }
+
+        .error {
+            color: #c62828;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #00796b;
+            font-weight: bold;
+        }
+
+        .polkadot-anchor-btn {
+            background: #e6007a;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 7px 14px;
+            cursor: pointer;
+        }
+
+        .polkadot-anchor-btn:hover {
+            background: #c50068;
+        }
+
+        .anchor-status {
+            margin-top: 1em;
+        }
+
+        pre {
+            font-size: 0.93em;
+            background: #fbfbfa;
+            border-radius: 5px;
+            padding: 1em;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Lockb0x Codex Multi-Anchor Demo</h1>
+    <label for="codexJsonInput">1. Load <code>codex-entry.json</code>:</label>
+    <input type="file" id="codexJsonInput" accept="application/json"><br>
+    <label for="zipInput">2. Load Zip Archive (optional):</label>
+    <input type="file" id="zipInput" accept=".zip"><br>
+    <div class="anchor-links" id="anchorLinks"></div>
+    <hr>
+    <h2>Add Polkadot Anchor</h2>
+    <label for="polkadotAddress">Polkadot Address:</label>
+    <input type="text" id="polkadotAddress" size="50" placeholder="5F3sa2...">
+    <button class="polkadot-anchor-btn" id="anchorPolkadotBtn">Anchor to Polkadot</button>
+    <div class="anchor-status" id="polkaStatus"></div>
+    <hr>
+    <div id="validationMsg"></div>
+    <div class="result">
+        <h3>Codex Entry</h3>
+        <pre id="codexResult"></pre>
+    </div>
+    <script>
+        // Minimal reference implementation for multi-anchor workflow
+        async function sha256(bytes) {
+            const buf = await crypto.subtle.digest("SHA-256", bytes);
+            return new Uint8Array(buf);
+        }
+        function b64u(bytes) {
+            return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        }
+        function niSha256(hashBytes) {
+            return `ni:///sha-256;${b64u(hashBytes)}`;
+        }
+        async function anchorPolkadot(entry, polkadotAccount) {
+            // Same mock logic as lib/protocol.js in your repo
+            const accountAddress = polkadotAccount;
+            const anchorData = {
+                codexId: entry.id,
+                timestamp: new Date().toISOString(),
+                integrity_proof: entry.storage?.integrity_proof,
+                polkadotAccount: accountAddress
+            };
+            const blockHash = `0x${b64u(await sha256(new TextEncoder().encode(JSON.stringify(anchorData))))}`;
+            const extrinsicHash = `0x${b64u(await sha256(new TextEncoder().encode(entry.id + anchorData.timestamp)))}`;
+            const blockNumber = Math.floor(Date.now() / 1000);
+            return {
+                chain: "polkadot:relay",
+                tx: extrinsicHash,
+                blockHash,
+                blockNumber,
+                hash_alg: "sha-256",
+                timestamp: anchorData.timestamp,
+                url: `https://polkadot.js.org/apps/#/explorer/query/${blockHash}`
+            };
+        }
+        function validateCodexEntry(entry) {
+            // See schema/codex-entry.json for requirements
+            const errors = [];
+            const reqFields = ["id", "version", "storage", "identity", "anchor"];
+            reqFields.forEach(f => { if (!(f in entry)) errors.push("Missing: " + f); });
+            if (entry.id && !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(entry.id)) errors.push("Invalid UUIDv4 in id");
+            if (entry.version && entry.version !== "0.0.2") errors.push("Invalid version");
+            if (entry.storage) {
+                ["protocol", "location", "integrity_proof"].forEach(f => { if (!(f in entry.storage)) errors.push("storage: missing " + f); });
+                if (entry.storage.protocol && !["ipfs", "s3", "azureblob", "gcs", "ftp", "local", "gdrive"].includes(entry.storage.protocol)) errors.push("storage: invalid protocol");
+                if (entry.storage.integrity_proof && !/^ni:\/\/\/sha-256;[A-Za-z0-9_-]{43,}$/.test(entry.storage.integrity_proof)) errors.push("storage: invalid integrity_proof");
+            }
+            if (entry.identity) { ["org", "process", "artifact"].forEach(f => { if (!(f in entry.identity)) errors.push("identity: missing " + f); }); }
+            if (entry.anchor) {
+                ["chain", "tx", "hash_alg"].forEach(f => { if (!(f in entry.anchor)) errors.push("anchor: missing " + f); });
+                if (entry.anchor.chain && !/^[a-z0-9]+:[a-zA-Z0-9_-]+$/.test(entry.anchor.chain)) errors.push("anchor: invalid chain");
+                if (entry.anchor.hash_alg && !["sha-256", "sha3-256", "blake3"].includes(entry.anchor.hash_alg)) errors.push("anchor: invalid hash_alg");
+            }
+            return { valid: errors.length === 0, errors };
+        }
+        let currentEntry = null;
+        document.getElementById("codexJsonInput").addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const content = await file.text();
+            try {
+                const entry = JSON.parse(content);
+                currentEntry = entry;
+                document.getElementById("codexResult").textContent = JSON.stringify(entry, null, 2);
+                showAnchorLinks(entry);
+                showValidation(entry);
+            } catch (err) {
+                currentEntry = null;
+                document.getElementById("codexResult").textContent = "";
+                document.getElementById("validationMsg").innerHTML = `<div class="error">Invalid JSON: ${err.message}</div>`;
+            }
+        });
+        document.getElementById("zipInput").addEventListener("change", (e) => {
+            // Reference only; you can add a download or upload to Drive if desired.
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById("anchorLinks").innerHTML += `<span style="color:#555;font-size:0.95em;">Zip file loaded: ${file.name}</span>`;
+            }
+        });
+        function showAnchorLinks(entry) {
+            let html = "";
+            if (entry && entry.storage && entry.storage.location && entry.storage.location.startsWith("https://drive.google.com/"))
+                html += `<a href="${entry.storage.location}" target="_blank">Google Drive File</a>`;
+            if (entry && entry.anchor && entry.anchor.chain === "google:drive" && entry.anchor.url)
+                html += `<a href="${entry.anchor.url}" target="_blank">Google Drive Anchor</a>`;
+            if (entry && entry.anchor && entry.anchor.chain === "polkadot:relay" && entry.anchor.url)
+                html += `<a href="${entry.anchor.url}" target="_blank" style="color:#e6007a;font-weight:bold;">Polkadot Anchor</a>`;
+            document.getElementById("anchorLinks").innerHTML = html;
+        }
+        function showValidation(entry) {
+            const { valid, errors } = validateCodexEntry(entry);
+            document.getElementById("validationMsg").innerHTML = valid
+                ? `<div class="success">Entry schema valid ✓</div>`
+                : `<div class="error">Invalid schema:<br>${errors.join("<br>")}</div>`;
+        }
+        document.getElementById("anchorPolkadotBtn").addEventListener("click", async () => {
+            const addr = document.getElementById("polkadotAddress").value.trim();
+            if (!addr || !addr.match(/^[1-9A-HJ-NP-Za-km-z]{47,48}$/)) {
+                document.getElementById("polkaStatus").innerHTML = "<span class='error'>Invalid Polkadot address (must be 47-48 chars, SS58 format)</span>";
+                return;
+            }
+            if (!currentEntry) {
+                document.getElementById("polkaStatus").innerHTML = "<span class='error'>Please load a codex-entry.json first.</span>";
+                return;
+            }
+            document.getElementById("polkaStatus").innerHTML = "Anchoring to Polkadot...";
+            const polkaAnchor = await anchorPolkadot(currentEntry, addr);
+            currentEntry.anchor = polkaAnchor;
+            currentEntry.createdBy = { type: "polkadot", address: addr };
+            document.getElementById("codexResult").textContent = JSON.stringify(currentEntry, null, 2);
+            showAnchorLinks(currentEntry);
+            showValidation(currentEntry);
+            document.getElementById("polkaStatus").innerHTML =
+                `<span class='success'>Polkadot anchor added ✓</span> <a href='${polkaAnchor.url}' target='_blank'>Explorer</a>`;
+        });
+    </script>
+</body>
+
+</html>

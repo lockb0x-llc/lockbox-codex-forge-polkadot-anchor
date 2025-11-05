@@ -1,66 +1,58 @@
+# AGENTS.md — Code Review & Action Plan for Lockb0x Codex Forge (Polkadot Anchor Fork)
 
-# AGENTS.md — Code Review & Action Plan for Lockb0x Codex Forge
-
-## Status Summary (Updated 2025-11-01)
+## Status Summary (Updated 2025-11-05)
 
 - See [README.md](../README.md) for current features, troubleshooting, and user guidance.
 - See [ZIP-ARCHIVE.md](./ZIP-ARCHIVE.md) for zip archive workflow and implementation details.
 - See [DEVELOPMENT-PLAN.md](./DEVELOPMENT-PLAN.md) for architecture, phased breakdown, and build status.
+- **See [polkadot-enhancement](./polkadot-enhancement) for Polkadot blockchain anchoring integration.**
 
-### What's Working ✓
+---
 
-- **Lockb0x Protocol Core:** UUID generation, SHA-256 hashing, ni-URI encoding, JSON canonicalization (RFC 8785), ES256 signing
-- **Google Drive Integration:** Payload storage, anchor creation, authentication, token persistence, existence validation
-- **Mock Anchor Flow:** Local/offline anchor generation for testing
-- **Codex Entry Workflow:** Complete pipeline from upload to export with schema validation
-- **UI/UX:** Stepper feedback, error handling, recovery instructions, export/download features
+### What’s Working ✓
 
-### What's Not Implemented ✗
+- **Lockb0x Protocol Core:** UUID generation, SHA-256 hashing, ni-URI encoding, JSON canonicalization (RFC 8785), ES256 signing.
+- **Google Drive Integration:** Payload storage, anchor creation, authentication, token persistence, existence validation.
+- **Mock Anchor Flow:** Local/offline anchor generation for testing.
+- **Codex Entry Workflow:** Complete pipeline from upload to export with schema validation.
+- **Polkadot Blockchain Anchor (New in Fork):** Integrity proofs can be anchored to Polkadot using the extension workflow; Codex Entries now can record both Google and Polkadot identities, with anchor details integrated. See [polkadot-enhancement](./polkadot-enhancement).
+- **UI/UX:** Stepper feedback, error handling, recovery instructions, export/download features, anchor type selection menu and feedback for both chains.
 
-**Zip Archive Workflow:** Implementation in progress; this is the top priority for the next release and required before marketplace publication.
-- **Testing Infrastructure:**
-  - Test files exist but no test runner script in package.json
-  - Cannot run `npm test` without configuration
-- **Code Quality:**
-  - Multiple linting warnings (unused variables)
-  - Need cleanup and documentation improvements
+---
+
+### What’s Not Implemented ✗
+
+- **Chrome Built-In AI**
+- **Full Polkadot extrinsic signing:** The current Polkadot anchor uses RPC for demonstration purposes; future work will add identity-asserted signed extrinsic submission. See [polkadot-enhancement](./polkadot-enhancement).
+- **Expanded Testing Infrastructure/Docs:** Needs coverage for Polkadot anchor flows.
+
+---
 
 ### Next Actions
 
-1. **Zip Archive Implementation (TOP PRIORITY):**
-   - Complete and validate the zip archive workflow (see ZIP-ARCHIVE.md)
-   - Integrate zip archive creation into extension operations
-   - Update all documentation and user guidance to reflect this workflow
+1. **Polkadot Anchor Integration:**
+   - Upgrade `anchorPolkadot()` to support signed extrinsics via @polkadot/api (see [polkadot-enhancement](./polkadot-enhancement)).
+   - Expand Codex Entry builder and validation tools for multi-anchor support.
+   - Document anchor type selection patterns in contributor guides.
 
 2. **Testing Infrastructure:**
-   - Add test runner script to package.json
-   - Configure test framework (vitest config exists)
-   - Run existing tests and fix any failures
+   - Expand tests and runners to cover Polkadot anchor, simulated extrinsics, multi-anchor validation.
 
-3. **Code Quality:**
-   - Fix all linting warnings
-   - Remove unused variables and imports
-   - Add JSDoc comments for public APIs
-
-4. **Future Enhancements:**
-   - UI/UX polish and accessibility improvements
-   - Expanded error handling and user guidance
-   - Video tutorials and demos
-   - Production-grade deployment preparation
+3. **Documentation:**
+   - Ensure all contributor and troubleshooting guides reflect the fork’s multi-chain support.
+   - Link [polkadot-enhancement](./polkadot-enhancement) wherever Polkadot-specific code or workflow is relevant.
 
 ---
 
 ## Team Roles & Assignments
 
-- **Project Lead:** Oversees development, documentation, roadmap, and strategy
-- **AI Integration (PENDING):** Will implement Chrome Built-In AI when APIs are stable/available
-- **Protocol Engineer:** Maintains protocol logic, anchor flows, and schema validation
-- **UI/UX Designer:** Designs popup UI, stepper, and user flows; improves accessibility
-- **Google Cloud Integration:** Maintains Google Drive API, authentication, and token persistence
-- **QA & Testing:** Conducts user testing, maintains test infrastructure, collects feedback
-- **Documentation:** Maintains README, contributor guides, troubleshooting docs
+- **Project Lead:** Oversees development, documentation, roadmap, and strategy.
+- **Protocol Engineer:** Maintains protocol logic, anchor flows, schema validation, multi-anchor support, and blockchain integration.
+- **Blockchain/Polkadot Integration:** Implements anchorPolkadot and signed chain submission; responsible for [polkadot-enhancement](./polkadot-enhancement) workflow and architecture.
+- **UI/UX Designer:** Designs popup UI, stepper, user flows; maintains anchor selection logic and feedback.
+- **QA & Testing:** Conducts user testing, maintains test infrastructure, collects feedback (for both Google Drive and Polkadot anchor workflows).
+- **Documentation:** Maintains README, contributor guides, troubleshooting docs; ensures multi-chain onboarding and references to [polkadot-enhancement](./polkadot-enhancement).
 
+---
 
-
-
-
+For technical details and code change planning on Polkadot anchoring, contributors must review [polkadot-enhancement](./polkadot-enhancement) and apply recommended extensions in all relevant files.

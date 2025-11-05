@@ -1,6 +1,6 @@
 // popup.js - Handles popup UI logic for Lockb0x Protocol Codex Forge
 
-import { getPolkadotProfile } from "../lib/polkadot-utils.js";
+import { getPolkadotProfile, setPolkadotProfile } from "../lib/polkadot-utils.js";
 
 // Store zip blob globally for download
 let currentZipBlob = null;
@@ -151,6 +151,7 @@ const fileInput = document.getElementById("fileInput");
 const extractPageBtn = document.getElementById("extractPageBtn");
 const anchorType = document.getElementById("anchorType");
 const googleSignInBtn = document.getElementById("googleSignInBtn");
+const polkadotConnectBtn = document.getElementById("polkadotConnectBtn");
 let googleLogOutBtn = document.getElementById("googleLogOutBtn");
 if (!googleLogOutBtn) {
   googleLogOutBtn = document.createElement("button");
@@ -173,7 +174,6 @@ const statusDiv = document.getElementById("status");
 
 let extractedData = "";
 let extractedBytes = null;
-let metadata = {};
 
 import {
   getGoogleAuthToken,
@@ -212,6 +212,7 @@ async function updateAuthUI() {
     // Hide Google controls when Polkadot is selected
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "none";
+    polkadotConnectBtn.style.display = "inline-block";
     userProfileDiv.style.display = "block";
     
     // Display Polkadot connection status using utility function
@@ -223,7 +224,7 @@ async function updateAuthUI() {
     } else {
       authStatus.textContent = "Polkadot Not Connected";
       authStatus.style.color = "#c62828";
-      userProfileDiv.innerHTML = `<span style="color:#c62828;">No Polkadot profile found. Using default mock address.</span>`;
+      userProfileDiv.innerHTML = `<span style="color:#c62828;">No Polkadot profile found. Click "Connect Polkadot Account" to add one.</span>`;
     }
     return;
   }
@@ -231,6 +232,7 @@ async function updateAuthUI() {
   if (!anchorIsGoogle) {
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "none";
+    polkadotConnectBtn.style.display = "none";
     userProfileDiv.style.display = "none";
     authStatus.textContent = "Using Mock Anchor";
     authStatus.style.color = "#616161";
@@ -239,6 +241,7 @@ async function updateAuthUI() {
   if (googleAuthToken) {
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "inline-block";
+    polkadotConnectBtn.style.display = "none";
     authStatus.textContent = "Google Authenticated";
     authStatus.style.color = "#00796b";
     userProfileDiv.textContent = "Loading profile...";
@@ -258,6 +261,7 @@ async function updateAuthUI() {
   } else {
     googleSignInBtn.style.display = "inline-block";
     googleLogOutBtn.style.display = "none";
+    polkadotConnectBtn.style.display = "none";
     userProfileDiv.style.display = "none";
     authStatus.textContent = "Google Not Signed In";
     authStatus.style.color = "#c62828";
@@ -407,6 +411,39 @@ googleLogOutBtn.addEventListener("click", async () => {
   );
 });
 
+// Handle Polkadot account connection
+if (polkadotConnectBtn) {
+  polkadotConnectBtn.addEventListener("click", async () => {
+    setStatusMessage("Connecting Polkadot account...", "info");
+    console.log("[popup] Polkadot connect button clicked");
+    
+    // Prompt user for Polkadot address
+    const address = prompt("Enter your Polkadot account address:");
+    if (!address) {
+      setStatusMessage("Polkadot connection cancelled.", "info");
+      return;
+    }
+    
+    // Validate Polkadot address format (basic check)
+    if (!address.match(/^[1-9A-HJ-NP-Za-km-z]{47,48}$/)) {
+      setStatusMessage("Invalid Polkadot address format.", "error", "Please enter a valid Polkadot address (47-48 characters).");
+      return;
+    }
+    
+    // Optionally prompt for account name
+    const name = prompt("Enter account name (optional):", "My Polkadot Account");
+    
+    // Save to chrome storage
+    try {
+      await setPolkadotProfile({ address, name: name || "Polkadot Account" });
+      setStatusMessage("Polkadot account connected successfully.", "success");
+      await updateAuthUI();
+    } catch (err) {
+      setStatusMessage("Failed to save Polkadot account.", "error", err.message);
+      console.error("[popup] Polkadot connection error:", err);
+    }
+  });
+}
 
 entryForm.addEventListener("submit", async (e) => {
   e.preventDefault();

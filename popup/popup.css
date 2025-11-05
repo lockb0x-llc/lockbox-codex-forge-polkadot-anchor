@@ -17,6 +17,21 @@
   display: none;
 }
 
+/* Polkadot connect button */
+.polkadot-connect-btn {
+  margin-left: 8px;
+  display: none;
+  background-color: #e6007a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.polkadot-connect-btn:hover {
+  background-color: #c50068;
+}
+
 /* Auth status styling */
 .auth-status {
   margin-left: 10px;

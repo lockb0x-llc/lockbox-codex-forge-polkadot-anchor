@@ -13,7 +13,7 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 - Codex Entry workflow: upload, hash/sign, anchor, export, schema validation.
 - Zip Archive workflow: encrypted archive, provenance comment, dual signature.
 - Google and Mock Anchors: local and Drive-based workflows.
-- **Polkadot Blockchain Anchor:** Extension now supports anchoring integrity proofs to Polkadot with address/account info in Codex Entry. See [polkadot-enhancement](./polkadot-enhancement).
+- **Polkadot Blockchain Anchor:** Extension now supports anchoring integrity proofs to Polkadot with address/account info in Codex Entry. See [polkadot-enhancement.md](./polkadot-enhancement.md).
 
 ---
 
@@ -26,14 +26,14 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## In Progress / Next Steps
 
 1. **Polkadot Anchor Enhancement:**
-   - Complete signed extrinsic support in `anchorPolkadot()` ([see guide](./polkadot-enhancement)).
+   - Complete signed extrinsic support in `anchorPolkadot()` ([see guide](./polkadot-enhancement.md)).
    - Add Codex Entry multi-anchor support with both Google and Polkadot anchor details.
    - Enhance UI workflow for account entry, selection, and feedback.
    - Expand test coverage for Polkadot anchor and extrinsic validation.
 
 2. **Documentation & Contributor Guides:**
    - All dev and onboarding docs must mention this repo’s fork and Polkadot enhancements.
-   - Reference [polkadot-enhancement](./polkadot-enhancement) in anchor-specific sections.
+   - Reference [polkadot-enhancement.md](./polkadot-enhancement.md) in anchor-specific sections.
 
 ---
 
@@ -66,7 +66,7 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## Technical Milestones
 
 ### Blockchain Anchor Integration
-- Integrate `anchorPolkadot(entry, polkadotAccount)` (see [polkadot-enhancement](./polkadot-enhancement)) with RPC and future extrinsic support.
+- Integrate `anchorPolkadot(entry, polkadotAccount)` (see [polkadot-enhancement.md](./polkadot-enhancement.md)) with RPC and future extrinsic support.
 - Update background.js, protocol.js, and popup.js to support anchor type option, account storage, finalized Codex Entry building, and UI feedback.
 
 ---
@@ -79,4 +79,4 @@ Refer to [AGENTS.md](./AGENTS.md) for updated roles covering both Google and Pol
 
 ## Reference and Contributor Onboarding
 
-For all architectural, workflow, and UI code enhancements regarding the Polkadot blockchain anchor, see and follow [docs/polkadot-enhancement](./polkadot-enhancement).
+For all architectural, workflow, and UI code enhancements regarding the Polkadot blockchain anchor, see and follow [polkadot-enhancement.md](./polkadot-enhancement.md).

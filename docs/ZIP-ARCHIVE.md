@@ -15,7 +15,7 @@ The Zip Archive feature in this fork supports anchoring and validation on both G
    - Archive is encrypted using Google account email, mock password, or as future work, with Polkadot/address-linked key.
 3. **Multi-Anchor Options**
    - If Google Drive anchor selected, archive is uploaded to Drive.
-   - If Polkadot anchor selected, integrity proofs are submitted to chain via `anchorPolkadot()`; Codex Entry updated with anchor, tx, and chain URL (see [polkadot-enhancement](./polkadot-enhancement)).
+   - If Polkadot anchor selected, integrity proofs are submitted to chain via `anchorPolkadot()`; Codex Entry updated with anchor, tx, and chain URL (see [polkadot-enhancement.md](./polkadot-enhancement.md)).
    - Both anchors may be included in Codex Entry as `anchors[]`.
 4. **Final Codex Entry Handling**
    - Anchor details and identity from Google/Polkadot recording.
@@ -25,7 +25,7 @@ The Zip Archive feature in this fork supports anchoring and validation on both G
 
 ## Implementation Details
 
-- See [polkadot-enhancement](./polkadot-enhancement) for code and workflow references for Polkadot integration.
+- See [polkadot-enhancement.md](./polkadot-enhancement.md) for code and workflow references for Polkadot integration.
 - Codex Entry builder supports both anchor types and merges identity info.
 - UI elements allow anchor type selection, address entry, and transaction feedback.
 
@@ -38,7 +38,7 @@ To verify a Lockb0x Codex zip archive:
 - Compare payload file and `codex-entry.json`; validate `anchors[]` array for Google and/or Polkadot details.
 - Review archive-level provenance comment.
 - Compute integrity proof hash, verify chain and Drive anchors, validate signatures.
-- Multi-anchor verification now supported (see [polkadot-enhancement](./polkadot-enhancement)).
+- Multi-anchor verification now supported (see [polkadot-enhancement.md](./polkadot-enhancement.md)).
 
 ---
 
@@ -51,4 +51,4 @@ To verify a Lockb0x Codex zip archive:
 
 ---
 
-**For architectural integration, see [polkadot-enhancement](./polkadot-enhancement) and ensure all new workflows are documented and tested accordingly.**
+**For architectural integration, see [polkadot-enhancement.md](./polkadot-enhancement.md) and ensure all new workflows are documented and tested accordingly.**

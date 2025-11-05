@@ -23,7 +23,7 @@
 23| 
 24| ### Not Yet Implemented
 25|  - **Chrome Built-In AI**: Chrome AI APIs (summarizer, prompt) are still experimental and not available in all Chrome releases. Currently using fallback text extraction for metadata generation.
-26|  - **Polkadot extrinsic signing via @polkadot/api:** Current anchor implementation posts entries via RPC, but will be upgraded to signed extrinsics in future releases. See [docs/polkadot-enhancement](docs/polkadot-enhancement).
+26|  - **Polkadot extrinsic signing via @polkadot/api:** Current anchor implementation posts entries via RPC, but will be upgraded to signed extrinsics in future releases. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md).
 27| 
 28| ## Current Status
 29| 
@@ -32,7 +32,7 @@
 32| - **Zip Archive Workflow:** Payload and codex entry are packaged together in an encrypted, verifiable zip archive with dual signatures
 33| - **Google Drive Integration:** Zip archive storage, anchor creation, and existence validation are robust and working
 34| - **Mock Anchor Flow:** Local/offline anchor generation is fully functional
-35| - **Polkadot Anchor Flow:** Polkadot transaction anchoring of integrity proofs is implemented; see [docs/polkadot-enhancement](docs/polkadot-enhancement)
+35| - **Polkadot Anchor Flow:** Polkadot transaction anchoring of integrity proofs is implemented; see [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md)
 36| - **Schema Validation:** Codex entries validate against schema v0.0.2
 37| - **UI/UX:** Complete workflow, incremental feedback, error handling, stepper status, anchor selection UI, and zip download capability
 38| 
@@ -80,7 +80,7 @@
 80| - If the Polkadot anchor is selected, the extension will prompt for a Polkadot address to sign as createdBy.
 81| - Polkadot anchors are created via RPC submission by default, recording integrity proofs.
 82| - Future upgrades will support full extrinsic signing and identity assertion.
-83| - See [docs/polkadot-enhancement](docs/polkadot-enhancement) for technical integration guide and code locations.
+83| - See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md) for technical integration guide and code locations.
 84| 
 85| ## Troubleshooting
 86| 
@@ -147,7 +147,7 @@
 147| - `docs/DEVELOPMENT-PLAN.md` for technical milestones and roadmap.
 148| - `docs/AGENTS.md` for team roles and assignments.
 149| - `docs/GoogleCloudAnchor.md` for integration status and next steps.
-150| - `docs/polkadot-enhancement` for blockchain anchoring workflow, code changes, and architectural additions specific to this fork
+150| - [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md) for blockchain anchoring workflow, code changes, and architectural additions specific to this fork
 151| 
 152| ## Workflow & Features
 153| 
@@ -178,18 +178,18 @@
 178| 
 179| ## Troubleshooting & Support
 180| 
-181| See AGENTS.md, GoogleCloudAnchor.md, and polkadot-enhancement for action plans, debugging, and integration status
+181| See [docs/AGENTS.md](docs/AGENTS.md), [docs/GoogleCloudAnchor.md](docs/GoogleCloudAnchor.md), and [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md) for action plans, debugging, and integration status.
 182| Use Chrome DevTools for logs and error messages
 183| Review status and error messages in the popup UI for feedback
 184| For anchor and signing errors, see background.js logs
-185| Refer to DEVELOPMENT-PLAN.md for current gaps and next steps
+185| Refer to [docs/DEVELOPMENT-PLAN.md](docs/DEVELOPMENT-PLAN.md) for current gaps and next steps
 186| 
 187| ## Documentation & Contribution
 188| 
-189| See DEVELOPMENT-PLAN.md for implementation roadmap
-190| See GoogleCloudAnchor.md for integration status and next steps
-191| See AGENTS.md for team roles and assignments
-192| See polkadot-enhancement for blockchain anchor integration details
+189| See [docs/DEVELOPMENT-PLAN.md](docs/DEVELOPMENT-PLAN.md) for implementation roadmap
+190| See [docs/GoogleCloudAnchor.md](docs/GoogleCloudAnchor.md) for integration status and next steps
+191| See [docs/AGENTS.md](docs/AGENTS.md) for team roles and assignments
+192| See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md) for blockchain anchor integration details
 193| Pull requests and feedback are welcome!
 194| 
 195| ---

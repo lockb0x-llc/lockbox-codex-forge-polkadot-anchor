@@ -159,3 +159,44 @@ UI	Add “Polkadot” option + status display	popup.html, popup.js
 
 
 ⸻
+
+## ✅ Implementation Status (Updated)
+
+All planned features have been successfully implemented:
+
+1. **✅ Anchor Adapter** - `anchorPolkadot()` moved to `protocol.js` with complete implementation
+   - Returns all required schema fields: chain, tx, hash_alg, timestamp
+   - Additional fields: blockHash, blockNumber, url (explorer link)
+   - Accepts both string addresses and account objects
+
+2. **✅ Identity Merge** - `createdBy` extended in popup.js to include Polkadot profile
+   - Uses `getPolkadotProfile()` from polkadot-utils.js
+   - Falls back to default mock address if no profile configured
+
+3. **✅ Background Workflow** - File handlers call `anchorPolkadot()` when `anchorType === "polkadot"`
+   - Implemented in both small-file-handler.js and large-file-handler.js
+   - No changes needed to background.js (delegates to handlers)
+
+4. **✅ UI Components** - Complete Polkadot connection UI added
+   - "Polkadot Anchor" option in anchor type selector
+   - "Connect Polkadot Account" button with pink/magenta styling
+   - Connection status display showing connected address
+   - Prompts for address and optional name
+   - Address validation (47-48 character substrate format)
+
+5. **✅ Storage** - Polkadot profile persistence via chrome.storage.local
+   - `setPolkadotProfile()` saves profile with address and name
+   - `getPolkadotProfile()` retrieves stored profile
+   - Full test coverage
+
+6. **✅ Testing** - All tests passing
+   - protocol.test.js validates anchorPolkadot return fields including url
+   - polkadot-utils.test.js validates profile storage functions
+   - Tests verify both string and object account inputs
+
+7. **✅ Documentation** - README.md updated with Polkadot usage instructions
+   - Step-by-step guide for connecting Polkadot account
+   - Explanation of anchor fields and explorer links
+   - Notes about current mock implementation and future upgrades
+
+The Polkadot anchor integration is complete and ready for testing!

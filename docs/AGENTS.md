@@ -1,8 +1,11 @@
 # AGENTS.md — Code Review & Action Plan for Lockb0x Codex Forge (Polkadot Anchor Fork)
 
+> **Changelog:** Documentation updated with agent-workplan.md reference—see [agent-workplan.md](./agent-workplan.md) for complete technical direction on the extended workflow including Google Drive upload, codex preloading, and Polkadot anchor integration.
+
 ## Status Summary (Updated 2025-11-05)
 
 - See [README.md](../README.md) for current features, troubleshooting, and user guidance.
+- See [agent-workplan.md](./agent-workplan.md) for complete agent-driven workflow guide, implementation milestones, and QA criteria.
 - See [ZIP-ARCHIVE.md](./ZIP-ARCHIVE.md) for zip archive workflow and implementation details.
 - See [DEVELOPMENT-PLAN.md](./DEVELOPMENT-PLAN.md) for architecture, phased breakdown, and build status.
 - **See [polkadot-enhancement.md](./polkadot-enhancement.md) for Polkadot blockchain anchoring integration.**
@@ -55,4 +58,4 @@
 
 ---
 
-For technical details and code change planning on Polkadot anchoring, contributors must review [polkadot-enhancement.md](./polkadot-enhancement.md) and apply recommended extensions in all relevant files.
+For technical details and code change planning on Polkadot anchoring, contributors must review [polkadot-enhancement.md](./polkadot-enhancement.md) and apply recommended extensions in all relevant files. For complete workflow documentation and agent collaboration patterns, see [agent-workplan.md](./agent-workplan.md).

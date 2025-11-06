@@ -1,5 +1,7 @@
 # Lockb0x Codex Forge Zip Archive Workflow (Polkadot Anchor Fork)
 
+> **Changelog:** Zip archive workflow now integrated with extended Google Drive + Polkadot anchor options—see [agent-workplan.md](./agent-workplan.md) for complete technical workflow documentation.
+
 ## Overview
 
 The Zip Archive feature in this fork supports anchoring and validation on both Google Drive and the Polkadot blockchain. Codex Entries now record anchor details from either (or both) sources, and the workflow supports flexible multi-chain provenance.
@@ -51,4 +53,4 @@ To verify a Lockb0x Codex zip archive:
 
 ---
 
-**For architectural integration, see [polkadot-enhancement.md](./polkadot-enhancement.md) and ensure all new workflows are documented and tested accordingly.**
+**For architectural integration, see [polkadot-enhancement.md](./polkadot-enhancement.md) and ensure all new workflows are documented and tested accordingly. For complete workflow documentation including all anchor types and user journey, see [agent-workplan.md](./agent-workplan.md).**

@@ -1,5 +1,7 @@
 # Polkadot API (PAPI) Implementation Guide
 
+> **Changelog:** PAPI implementation is now documented as part of the extended workflow—see [agent-workplan.md](./agent-workplan.md) for complete context on Polkadot anchor integration within the full user workflow.
+
 ## Overview
 
 The Polkadot anchor implementation uses the modern Polkadot API (PAPI) with Smoldot light client for decentralized blockchain interaction. This approach follows the best practices from the [Beginners Guide to Polkadot API (PAPI)](https://dev.to/badery/beginners-guide-to-polkadot-api-papi-youve-got-mail-mc1) article.
@@ -227,6 +229,8 @@ When modifying the PAPI implementation:
 3. Verify no memory leaks with long-running tests
 4. Update documentation for any API changes
 5. Run security scan with `codeql_checker`
+
+For complete workflow context and agent collaboration patterns, see [agent-workplan.md](./agent-workplan.md).
 
 ## License
 

@@ -1,5 +1,7 @@
 # Lockb0x Codex Forge — Development Plan (Polkadot Anchor Fork)
 
+> **Changelog:** Development milestones and QA criteria now documented in [agent-workplan.md](./agent-workplan.md)—see that document for complete technical direction and implementation details.
+
 ## Project Goal
 
 Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring, specifically integrating the Polkadot blockchain alongside the original Google Drive backend.
@@ -80,3 +82,5 @@ Refer to [AGENTS.md](./AGENTS.md) for updated roles covering both Google and Pol
 ## Reference and Contributor Onboarding
 
 For all architectural, workflow, and UI code enhancements regarding the Polkadot blockchain anchor, see and follow [polkadot-enhancement.md](./polkadot-enhancement.md).
+
+For complete agent-driven workflow documentation, implementation milestones, QA criteria, and collaborative development patterns, see [agent-workplan.md](./agent-workplan.md).

@@ -1,4 +1,10 @@
-\🧩 Goal
+# Polkadot Blockchain Anchor Integration Guide
+
+> **Changelog:** Polkadot anchor integration now documented as part of the complete extended workflow—see [agent-workplan.md](./agent-workplan.md) for full technical direction including Google Drive upload, codex preloading, and multi-anchor workflow.
+
+---
+
+## 🧩 Goal
 
 Extend Lockb0x Codex Forge to:
 	1.	Use Google Drive for payload storage (unchanged).
@@ -223,4 +229,4 @@ All planned features have been successfully implemented with modern Polkadot API
 - Wait for transaction inclusion and finalization
 - Return real transaction hash in anchor.tx field
 
-The Polkadot anchor integration now uses modern PAPI with real blockchain connectivity!
+The Polkadot anchor integration now uses modern PAPI with real blockchain connectivity! For complete workflow documentation, QA criteria, and agent collaboration patterns, see [agent-workplan.md](./agent-workplan.md).

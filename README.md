@@ -1,5 +1,7 @@
 # Lockb0x Codex Forge — Chrome Extension (Polkadot Anchor Fork)
 
+> **Changelog:** Extended workflow documentation added—see [docs/agent-workplan.md](docs/agent-workplan.md) for complete agent-driven development guide covering Google Drive upload, codex preloading, and Polkadot anchor integration.
+
 ## Overview
 
 This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extension. In addition to the core lockb0x protocol, this fork extends functionality to support anchoring Codex Entries not only to Google Drive, but also to the Polkadot blockchain as a second source of digital provenance. It is focused on empowering verifiable, multi-chain codex entry creation in the Chrome browser extension workflow.
@@ -162,6 +164,7 @@ The Zip Archive workflow is now fully implemented and validated. Polkadot anchor
 ---
 
 For more details, see:
+- **`docs/agent-workplan.md` for complete agent-driven workflow guide, implementation milestones, and QA criteria**
 - `docs/ZIP-ARCHIVE.md` for zip archive workflow and implementation details.
 - `docs/DEVELOPMENT-PLAN.md` for technical milestones and roadmap.
 - `docs/AGENTS.md` for team roles and assignments.

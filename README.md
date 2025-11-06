@@ -23,7 +23,7 @@ This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extensi
 
 ### Not Yet Implemented
  - **Chrome Built-In AI**: Chrome AI APIs (summarizer, prompt) are still experimental and not available in all Chrome releases. Currently using fallback text extraction for metadata generation.
- - **Polkadot extrinsic signing via @polkadot/api:** Current anchor implementation posts entries via RPC, but will be upgraded to signed extrinsics in future releases. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md).
+ - **Polkadot extrinsic signing:** Current PAPI implementation retrieves real blockchain data but does not yet submit signed extrinsics. Future releases will add full transaction signing and submission via system.remark. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md).
 
 ## Current Status
 
@@ -32,13 +32,13 @@ This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extensi
 - **Zip Archive Workflow:** Payload and codex entry are packaged together in an encrypted, verifiable zip archive with dual signatures
 - **Google Drive Integration:** Zip archive storage, anchor creation, and existence validation are robust and working
 - **Mock Anchor Flow:** Local/offline anchor generation is fully functional
-- **Polkadot Anchor Flow:** Polkadot transaction anchoring of integrity proofs is implemented; see [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md)
+- **Polkadot Anchor Flow:** Uses modern Polkadot API (PAPI) with Smoldot light client for decentralized blockchain interaction. Connects to real Polkadot relay chain, retrieves finalized block data, and gracefully falls back to mock mode when offline. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md)
 - **Schema Validation:** Codex entries validate against schema v0.0.2
 - **UI/UX:** Complete workflow, incremental feedback, error handling, stepper status, anchor selection UI, and zip download capability
 
 ### Known Gaps
 - **Chrome Built-In AI:** Chrome AI APIs (summarizer, prompt) are still experimental and not widely available. Currently using fallback text extraction for metadata generation.
-- **Polkadot extrinsic signing:** Polkadot anchor integration initially uses RPC submission for integrity proofs but will later add full extrinsic support.
+- **Polkadot extrinsic signing:** PAPI implementation retrieves real blockchain data but does not yet submit signed extrinsics. Future releases will add transaction signing and on-chain submission.
 
 ### Proof of Concept Status
 The extension successfully demonstrates:
@@ -78,6 +78,7 @@ The extension successfully demonstrates:
 ## Polkadot Authentication & Usage
 
 - The extension now supports Polkadot blockchain anchoring as an alternative to Google Drive.
+- **Implementation**: Uses modern Polkadot API (PAPI) with Smoldot light client for decentralized blockchain interaction.
 - To use Polkadot anchoring:
   1. Select "Polkadot Anchor" from the anchor type dropdown in the popup
   2. Click "Connect Polkadot Account" button
@@ -86,12 +87,18 @@ The extension successfully demonstrates:
   5. Generate your Codex entry - it will be anchored to the Polkadot relay chain
 - Polkadot anchors include:
   - Transaction hash (tx) - unique identifier for the anchor
-  - Block hash - hash of the block containing the anchor
-  - Block number - block number where the anchor was recorded
+  - Block hash - hash of the block containing the anchor (real block data when online)
+  - Block number - block number where the anchor was recorded (real block number when online)
   - Chain identifier - "polkadot:relay" following CAIP-2 format
   - Explorer URL - link to view the transaction on polkadot.js.org
-- Current implementation uses deterministic mock anchoring for proof-of-concept
-- Future upgrades will support full extrinsic signing via @polkadot/api
+- **PAPI Implementation Details**:
+  - Uses Polkadot API (PAPI) v1.20.1 with Smoldot light client v2.0.39
+  - Connects to real Polkadot relay chain via decentralized light client (no RPC required)
+  - Retrieves actual finalized block data when network connection is available
+  - Falls back gracefully to deterministic mock mode when offline or connection times out
+  - Timeout: 2 seconds in test mode, 8 seconds in production mode
+  - Anchor payload prepared for future system.remark extrinsic submission
+- Future upgrades will support full extrinsic signing for on-chain transaction submission
 - See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md) for technical integration guide and code locations.
 
 ## Troubleshooting

@@ -24,7 +24,9 @@ export function showJsonResult(entry) {
 export function showCertificateSummary(certificate) {
   const certificateSummary = document.getElementById("certificateSummary");
   if (certificateSummary) {
-    certificateSummary.textContent = certificate ? `Certificate: ${JSON.stringify(certificate, null, 2)}` : "";
+    certificateSummary.textContent = certificate
+      ? `Certificate: ${JSON.stringify(certificate, null, 2)}`
+      : "";
     certificateSummary.style.display = certificate ? "block" : "none";
   }
 }
@@ -32,7 +34,9 @@ export function showCertificateSummary(certificate) {
 export function showAISummary(ai) {
   const aiSummary = document.getElementById("aiSummary");
   if (aiSummary) {
-    aiSummary.textContent = ai ? `AI Summary: ${JSON.stringify(ai, null, 2)}` : "";
+    aiSummary.textContent = ai
+      ? `AI Summary: ${JSON.stringify(ai, null, 2)}`
+      : "";
     aiSummary.style.display = ai ? "block" : "none";
   }
 }

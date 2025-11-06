@@ -15,7 +15,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     chrome.identity.getAuthToken({ interactive: true }, async (token) => {
       if (chrome.runtime.lastError || !token) {
         const errMsg = chrome.runtime.lastError
-          ? chrome.runtime.lastError.message || JSON.stringify(chrome.runtime.lastError)
+          ? chrome.runtime.lastError.message ||
+            JSON.stringify(chrome.runtime.lastError)
           : "No token returned";
         console.error("[background] Google Auth error:", errMsg);
         sendResponse({ ok: false, error: errMsg });
@@ -34,9 +35,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         const metadata = await checkDriveFileExists({ fileId, token });
         sendResponse({ ok: true, exists: true, metadata });
       } catch (err) {
-        if (err.message && err.message.includes('401')) {
+        if (err.message && err.message.includes("401")) {
           await removeGoogleAuthToken();
-          sendResponse({ ok: false, exists: false, error: 'Google token expired. Please sign in again.' });
+          sendResponse({
+            ok: false,
+            exists: false,
+            error: "Google token expired. Please sign in again.",
+          });
         } else {
           sendResponse({ ok: false, exists: false, error: err.message });
         }
@@ -45,40 +50,60 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
   if (msg.type === "CREATE_CODEX_FROM_FILE") {
-    if (!["GOOGLE_AUTH_REQUEST", "VALIDATE_PAYLOAD_EXISTENCE", "CREATE_CODEX_FROM_FILE"].includes(msg.type)) {
+    if (
+      ![
+        "GOOGLE_AUTH_REQUEST",
+        "VALIDATE_PAYLOAD_EXISTENCE",
+        "CREATE_CODEX_FROM_FILE",
+      ].includes(msg.type)
+    ) {
       sendResponse({ ok: false, error: "Unknown message type" });
       return false;
     }
     (async function () {
       const result = await handleSmallFileUpload({ ...msg.payload });
       if (result.ok) {
-          // Archive and upload zip after successful small file upload
-          console.log('[background] Invoking processCodexEntryAndArchive for small file upload');
-          const payloadBytes = new Uint8Array(msg.payload.bytes);
-          const payloadFilename = msg.payload.filename;
-          const codexEntry = result.entry;
-          const storageMetadata = {
-            location: codexEntry.storage?.location,
-            tx: codexEntry.anchor?.tx,
-            url: codexEntry.anchor?.url,
-          };
-          const driveToken = msg.payload.googleAuthToken;
-          let zipResult = null;
-          try {
-            zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken });
-            console.log('[background] Zip workflow result (small file):', zipResult);
-          } catch (err) {
-            zipResult = { error: err.message };
-            console.error('[background] Error in zip workflow (small file):', err);
-          }
+        // Archive and upload zip after successful small file upload
+        console.log(
+          "[background] Invoking processCodexEntryAndArchive for small file upload",
+        );
+        const payloadBytes = new Uint8Array(msg.payload.bytes);
+        const payloadFilename = msg.payload.filename;
+        const codexEntry = result.entry;
+        const storageMetadata = {
+          location: codexEntry.storage?.location,
+          tx: codexEntry.anchor?.tx,
+          url: codexEntry.anchor?.url,
+        };
+        const driveToken = msg.payload.googleAuthToken;
+        let zipResult = null;
+        try {
+          zipResult = await processCodexEntryAndArchive({
+            payloadBytes,
+            payloadFilename,
+            codexEntry,
+            storageMetadata,
+            driveToken,
+          });
+          console.log(
+            "[background] Zip workflow result (small file):",
+            zipResult,
+          );
+        } catch (err) {
+          zipResult = { error: err.message };
+          console.error(
+            "[background] Error in zip workflow (small file):",
+            err,
+          );
+        }
         sendResponse({
           ok: true,
           entry: result.entry,
           payloadDriveInfo: result.payloadDriveInfo,
           codexDriveInfo: result.codexDriveInfo,
           codexSelfRefInfo: result.codexSelfRefInfo,
-            zipUploadResult: zipResult?.driveResult || null,
-            zipError: zipResult?.error || null,
+          zipUploadResult: zipResult?.driveResult || null,
+          zipError: zipResult?.error || null,
         });
       } else {
         sendResponse({
@@ -116,7 +141,9 @@ chrome.runtime.onConnect.addListener(function (port) {
       const result = await handleLargeFileUpload(metadata, chunks);
       if (result.ok) {
         // Archive and upload zip after successful large file upload
-        console.log('[background] Invoking processCodexEntryAndArchive for large file upload');
+        console.log(
+          "[background] Invoking processCodexEntryAndArchive for large file upload",
+        );
         // Reconstruct payload bytes from chunks
         const payloadBytes = new Uint8Array([].concat(...chunks));
         const payloadFilename = metadata.filename;
@@ -129,11 +156,23 @@ chrome.runtime.onConnect.addListener(function (port) {
         const driveToken = metadata.googleAuthToken;
         let zipResult = null;
         try {
-          zipResult = await processCodexEntryAndArchive({ payloadBytes, payloadFilename, codexEntry, storageMetadata, driveToken });
-          console.log('[background] Zip workflow result (large file):', zipResult);
+          zipResult = await processCodexEntryAndArchive({
+            payloadBytes,
+            payloadFilename,
+            codexEntry,
+            storageMetadata,
+            driveToken,
+          });
+          console.log(
+            "[background] Zip workflow result (large file):",
+            zipResult,
+          );
         } catch (err) {
           zipResult = { error: err.message };
-          console.error('[background] Error in zip workflow (large file):', err);
+          console.error(
+            "[background] Error in zip workflow (large file):",
+            err,
+          );
         }
         port.postMessage({
           ok: true,

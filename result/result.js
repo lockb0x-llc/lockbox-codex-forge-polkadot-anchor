@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     document.getElementById("downloadBtn").onclick = () => {
-      const blob = new Blob([entryElem.textContent], { type: "application/json" });
+      const blob = new Blob([entryElem.textContent], {
+        type: "application/json",
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;

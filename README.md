@@ -1,5 +1,7 @@
 # Lockb0x Codex Forge — Chrome Extension (Polkadot Anchor Fork)
 
+> **Changelog:** Extended workflow documentation added—see [docs/agent-workplan.md](docs/agent-workplan.md) for complete agent-driven development guide covering Google Drive upload, codex preloading, and Polkadot anchor integration.
+
 ## Overview
 
 This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extension. In addition to the core lockb0x protocol, this fork extends functionality to support anchoring Codex Entries not only to Google Drive, but also to the Polkadot blockchain as a second source of digital provenance. It is focused on empowering verifiable, multi-chain codex entry creation in the Chrome browser extension workflow.
@@ -9,25 +11,28 @@ This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extensi
 ## Features
 
 ### Implemented and Validated
- - **Lockb0x Protocol Core:** Complete implementation of UUID generation, SHA-256 hashing, ni-URI encoding, JSON canonicalization (RFC 8785), and ES256 signing
- - **File Upload Support:** Upload and anchor any file type (text, PDF, JSON, binary) to Google Drive or mock storage
- - **Zip Archive Workflow:** Payload and codex entry are packaged together in an encrypted, verifiable zip archive (see docs/ZIP-ARCHIVE.md)
- - **Google Drive Integration:** Secure zip archive storage, authentication, and token persistence in chrome.storage
- - **Dual Anchor Support:** Both mock (local) and Google Drive anchor flows fully functional
- - **Polkadot Blockchain Anchor:** (NEW in this fork) Codex entries can be anchored to the Polkadot blockchain using the extension workflow. Both Google and Polkadot identities are recorded in the entry, and anchors are stored together for multi-chain validation.
- - **Codex Entry Generation:** Complete workflow for hashing, canonicalizing, signing, anchoring, and validating entries
- - **Schema Validation:** Validation against lockb0x schema v0.0.2 runs before export, with feedback shown in popup
- - **Export Options:** Download codex entry and zip archive as JSON from popup UI
- - **Zip Archive Validation:** Existence validation in Drive before export, with download link shown if validated
- - **UI/UX:** Incremental stepper feedback, error messages, and recovery instructions for all workflow steps, now including new anchor selection options
+
+- **Lockb0x Protocol Core:** Complete implementation of UUID generation, SHA-256 hashing, ni-URI encoding, JSON canonicalization (RFC 8785), and ES256 signing
+- **File Upload Support:** Upload and anchor any file type (text, PDF, JSON, binary) to Google Drive or mock storage
+- **Zip Archive Workflow:** Payload and codex entry are packaged together in an encrypted, verifiable zip archive (see docs/ZIP-ARCHIVE.md)
+- **Google Drive Integration:** Secure zip archive storage, authentication, and token persistence in chrome.storage
+- **Dual Anchor Support:** Both mock (local) and Google Drive anchor flows fully functional
+- **Polkadot Blockchain Anchor:** (NEW in this fork) Codex entries can be anchored to the Polkadot blockchain using the extension workflow. Both Google and Polkadot identities are recorded in the entry, and anchors are stored together for multi-chain validation.
+- **Codex Entry Generation:** Complete workflow for hashing, canonicalizing, signing, anchoring, and validating entries
+- **Schema Validation:** Validation against lockb0x schema v0.0.2 runs before export, with feedback shown in popup
+- **Export Options:** Download codex entry and zip archive as JSON from popup UI
+- **Zip Archive Validation:** Existence validation in Drive before export, with download link shown if validated
+- **UI/UX:** Incremental stepper feedback, error messages, and recovery instructions for all workflow steps, now including new anchor selection options
 
 ### Not Yet Implemented
- - **Chrome Built-In AI**: Chrome AI APIs (summarizer, prompt) are still experimental and not available in all Chrome releases. Currently using fallback text extraction for metadata generation.
- - **Polkadot extrinsic signing:** Current PAPI implementation retrieves real blockchain data but does not yet submit signed extrinsics. Future releases will add full transaction signing and submission via system.remark. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md).
+
+- **Chrome Built-In AI**: Chrome AI APIs (summarizer, prompt) are still experimental and not available in all Chrome releases. Currently using fallback text extraction for metadata generation.
+- **Polkadot extrinsic signing:** Current PAPI implementation retrieves real blockchain data but does not yet submit signed extrinsics. Future releases will add full transaction signing and submission via system.remark. See [docs/polkadot-enhancement.md](docs/polkadot-enhancement.md).
 
 ## Current Status
 
 ### Validated and Working ✓
+
 - **Lockb0x Protocol Implementation:** All core protocol features (UUID, hashing, ni-URI, signing, canonicalization) are complete and validated
 - **Zip Archive Workflow:** Payload and codex entry are packaged together in an encrypted, verifiable zip archive with dual signatures
 - **Google Drive Integration:** Zip archive storage, anchor creation, and existence validation are robust and working
@@ -37,11 +42,14 @@ This repository is a **fork** of the original Lockb0x Codex Forge Chrome Extensi
 - **UI/UX:** Complete workflow, incremental feedback, error handling, stepper status, anchor selection UI, and zip download capability
 
 ### Known Gaps
+
 - **Chrome Built-In AI:** Chrome AI APIs (summarizer, prompt) are still experimental and not widely available. Currently using fallback text extraction for metadata generation.
 - **Polkadot extrinsic signing:** PAPI implementation retrieves real blockchain data but does not yet submit signed extrinsics. Future releases will add transaction signing and on-chain submission.
 
 ### Proof of Concept Status
+
 The extension successfully demonstrates:
+
 - ✓ Lockb0x protocol compliance (hashing, signing, anchoring, validation)
 - ✓ Google Drive as a storage and anchor backend
 - ✓ Polkadot chain anchor for digital provenance
@@ -111,7 +119,9 @@ The extension successfully demonstrates:
 ## Roadmap
 
 ### Next Milestone: Production Release
+
 The Zip Archive workflow is now fully implemented and validated. Polkadot anchor flows are implemented in proof-of-concept form. Future releases will add signing support and UI refinements.
+
 - ✓ Zip archiving for payloads (encrypted with user email or 'mock' password)
 - ✓ Dual signature workflow (before and after zip upload)
 - ✓ Lockb0x Codex Receipt and Proof Primitive file format
@@ -121,6 +131,7 @@ The Zip Archive workflow is now fully implemented and validated. Polkadot anchor
 - ✓ Improved error handling and UI feedback
 
 ### Planned / In Progress
+
 - Rollout of full Polkadot extrinsic signing using @polkadot/api
 - Final release and publication on Google Marketplace
 - Fork for Microsoft Edge and OneDrive integration
@@ -142,6 +153,7 @@ The Zip Archive workflow is now fully implemented and validated. Polkadot anchor
 ## Team Roles
 
 **Project Lead:** Oversees development, documentation, roadmap, and release strategy.
+
 - **AI Integration (PENDING):** Will implement and test Chrome Built-In AI APIs when available, including metadata generation and fallback logic.
 - **Protocol Engineer:** Develops and tests protocol logic, anchor flows, schema validation, and blockchain enhancements
 - **UI/UX Designer:** Designs popup UI, stepper, user flows, anchor type selectors, and feedback
@@ -162,6 +174,8 @@ The Zip Archive workflow is now fully implemented and validated. Polkadot anchor
 ---
 
 For more details, see:
+
+- **`docs/agent-workplan.md` for complete agent-driven workflow guide, implementation milestones, and QA criteria**
 - `docs/ZIP-ARCHIVE.md` for zip archive workflow and implementation details.
 - `docs/DEVELOPMENT-PLAN.md` for technical milestones and roadmap.
 - `docs/AGENTS.md` for team roles and assignments.

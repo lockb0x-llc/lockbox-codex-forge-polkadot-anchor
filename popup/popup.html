@@ -35,12 +35,16 @@
         <button id="googleSignInBtn" type="button" class="google-signin-btn">
           Sign in with Google
         </button>
-        <button id="polkadotConnectBtn" type="button" class="polkadot-connect-btn">
+        <button
+          id="polkadotConnectBtn"
+          type="button"
+          class="polkadot-connect-btn"
+        >
           Connect Polkadot Account
         </button>
         <span id="authStatus" class="auth-status"></span>
       </fieldset>
-      
+
       <!-- Step 3: Generate Codex Entry -->
       <fieldset class="step-fieldset">
         <legend>Step 3: Generate Entry</legend>
@@ -64,8 +68,9 @@
           href="#"
           target="_blank"
           class="payload-link"
-          >Download Zip from Drive</a>
-        </fieldset>
+          >Download Zip from Drive</a
+        >
+      </fieldset>
     </form>
 
     <!-- Stepper UI -->
@@ -103,7 +108,6 @@
       <pre id="jsonResult"></pre>
       <div id="certificateSummary"></div>
     </div>
-
 
     <script type="module" src="popup.js"></script>
   </body>

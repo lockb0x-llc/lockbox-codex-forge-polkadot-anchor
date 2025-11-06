@@ -1,6 +1,9 @@
 // popup.js - Handles popup UI logic for Lockb0x Protocol Codex Forge
 
-import { getPolkadotProfile, setPolkadotProfile } from "../lib/polkadot-utils.js";
+import {
+  getPolkadotProfile,
+  setPolkadotProfile,
+} from "../lib/polkadot-utils.js";
 
 // Store zip blob globally for download
 let currentZipBlob = null;
@@ -11,7 +14,7 @@ function handleCodexResponse(response) {
   if (response && response.zipBlob) {
     currentZipBlob = response.zipBlob;
   }
-  
+
   // Stepper updates for small file workflow
   if (response && response.ok && response.entry) {
     updateStepper("step-upload", "done");
@@ -44,7 +47,7 @@ function handleCodexResponse(response) {
               {
                 type: "VALIDATE_PAYLOAD_EXISTENCE",
                 payload: {
-                  fileId: response.zipDriveInfo.id
+                  fileId: response.zipDriveInfo.id,
                 },
               },
               resolve,
@@ -53,7 +56,11 @@ function handleCodexResponse(response) {
           if (validateZip && validateZip.ok && validateZip.exists) {
             zipExists = true;
             zipValidationMsg = "Zip archive exists on Google Drive.";
-          } else if (validateZip && validateZip.error && validateZip.error.includes('token expired')) {
+          } else if (
+            validateZip &&
+            validateZip.error &&
+            validateZip.error.includes("token expired")
+          ) {
             zipExists = false;
             zipValidationMsg = "Google token expired. Please sign in again.";
             await updateAuthUI();
@@ -72,7 +79,8 @@ function handleCodexResponse(response) {
     }
   } else if (response && typeof response.ok !== "undefined") {
     let errorMsg = "Failed to generate entry.\n";
-    errorMsg += "Full response object:\n" + JSON.stringify(response, null, 2) + "\n";
+    errorMsg +=
+      "Full response object:\n" + JSON.stringify(response, null, 2) + "\n";
     if (response && response.error) {
       errorMsg += "Error:\n" + JSON.stringify(response.error, null, 2) + "\n";
     }
@@ -84,8 +92,15 @@ function handleCodexResponse(response) {
         errorMsg += JSON.stringify(response.details, null, 2) + "\n";
       }
     }
-    setStatusMessage(errorMsg, "error", "Check error details above and try again.");
-    console.error("[popup] Failed to generate entry:", JSON.stringify(response, null, 2));
+    setStatusMessage(
+      errorMsg,
+      "error",
+      "Check error details above and try again.",
+    );
+    console.error(
+      "[popup] Failed to generate entry:",
+      JSON.stringify(response, null, 2),
+    );
     if (response && response.entry) {
       console.log("[popup] Entry object:", response.entry);
     }
@@ -95,7 +110,7 @@ function handleCodexResponse(response) {
 // Utility to show error and recovery instructions in the popup
 function showError(message, recovery) {
   setStatusMessage(`Error: ${message}`, "error", recovery);
-  if (typeof generateBtn !== 'undefined' && generateBtn) {
+  if (typeof generateBtn !== "undefined" && generateBtn) {
     generateBtn.disabled = false;
   }
   console.error("[popup] Error:", message, recovery || "");
@@ -207,14 +222,14 @@ if (authStatus && authStatus.parentNode) {
 async function updateAuthUI() {
   const anchorIsGoogle = anchorType && anchorType.value === "google";
   const anchorIsPolkadot = anchorType && anchorType.value === "polkadot";
-  
+
   if (anchorIsPolkadot) {
     // Hide Google controls when Polkadot is selected
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "none";
     polkadotConnectBtn.style.display = "inline-block";
     userProfileDiv.style.display = "block";
-    
+
     // Display Polkadot connection status using utility function
     const polkadotProfile = await getPolkadotProfile();
     if (polkadotProfile && polkadotProfile.address) {
@@ -228,7 +243,7 @@ async function updateAuthUI() {
     }
     return;
   }
-  
+
   if (!anchorIsGoogle) {
     googleSignInBtn.style.display = "none";
     googleLogOutBtn.style.display = "none";
@@ -254,8 +269,12 @@ async function updateAuthUI() {
       if (profile && profile.name && profile.email && profile.picture) {
         userProfileDiv.innerHTML = `<img src="${profile.picture}" alt="avatar" style="width:32px;height:32px;border-radius:50%;vertical-align:middle;margin-right:8px;"> <span style="font-weight:bold;">${profile.name}</span> <span style="color:#616161;">(${profile.email})</span>`;
       } else {
-        userProfileDiv.textContent = "Google profile unavailable. Please sign in again.";
-        setStatusMessage("Google profile unavailable. Try signing in again.", "error");
+        userProfileDiv.textContent =
+          "Google profile unavailable. Please sign in again.";
+        setStatusMessage(
+          "Google profile unavailable. Try signing in again.",
+          "error",
+        );
       }
     });
   } else {
@@ -271,12 +290,20 @@ async function updateAuthUI() {
 fileInput.addEventListener("change", (e) => {
   const file = e.target.files[0];
   if (!file) {
-    setStatusMessage("No file selected.", "error", "Please choose a file to upload.");
+    setStatusMessage(
+      "No file selected.",
+      "error",
+      "Please choose a file to upload.",
+    );
     return;
   }
   readFile(file, (bytes, data, err) => {
     if (err) {
-      setStatusMessage("Error reading file.", "error", "Try a different file or check file format.");
+      setStatusMessage(
+        "Error reading file.",
+        "error",
+        "Try a different file or check file format.",
+      );
       console.error("[popup] FileReader error:", err);
       extractedData = "";
       extractedBytes = null;
@@ -299,9 +326,12 @@ extractPageBtn &&
       if (tab.url && tab.url.startsWith("chrome://")) {
         showError(
           "Cannot extract content from chrome:// URLs.",
-          "Switch to a regular web page and try again."
+          "Switch to a regular web page and try again.",
         );
-        console.warn("[popup] Attempted to extract from chrome:// URL:", tab.url);
+        console.warn(
+          "[popup] Attempted to extract from chrome:// URL:",
+          tab.url,
+        );
         return;
       }
       // Use shared utility for extraction
@@ -309,7 +339,7 @@ extractPageBtn &&
         if (err) {
           showError(
             "Failed to extract page content.",
-            "Reload the page or check permissions."
+            "Reload the page or check permissions.",
           );
           console.error("[popup] Failed to extract page content:", err);
           return;
@@ -331,7 +361,7 @@ extractPageBtn &&
                   if (chrome.runtime.lastError || !dataUrl)
                     reject(chrome.runtime.lastError);
                   else resolve(dataUrl);
-                }
+                },
               );
             });
           } catch (_e) {
@@ -385,7 +415,11 @@ if (googleSignInBtn && authStatus) {
           setStatusMessage("Google sign-in successful.", "success");
           updateAuthUI();
         } else {
-          setStatusMessage("Google sign-in failed.", "error", "Check your Chrome login or try again.");
+          setStatusMessage(
+            "Google sign-in failed.",
+            "error",
+            "Check your Chrome login or try again.",
+          );
           updateAuthUI();
           console.error("[popup] Google sign-in failed:", response);
         }
@@ -416,30 +450,41 @@ if (polkadotConnectBtn) {
   polkadotConnectBtn.addEventListener("click", async () => {
     setStatusMessage("Connecting Polkadot account...", "info");
     console.log("[popup] Polkadot connect button clicked");
-    
+
     // Prompt user for Polkadot address
     const address = prompt("Enter your Polkadot account address:");
     if (!address) {
       setStatusMessage("Polkadot connection cancelled.", "info");
       return;
     }
-    
+
     // Validate Polkadot address format (basic check)
     if (!address.match(/^[1-9A-HJ-NP-Za-km-z]{47,48}$/)) {
-      setStatusMessage("Invalid Polkadot address format.", "error", "Please enter a valid Polkadot address (47-48 characters).");
+      setStatusMessage(
+        "Invalid Polkadot address format.",
+        "error",
+        "Please enter a valid Polkadot address (47-48 characters).",
+      );
       return;
     }
-    
+
     // Optionally prompt for account name
-    const name = prompt("Enter account name (optional):", "My Polkadot Account");
-    
+    const name = prompt(
+      "Enter account name (optional):",
+      "My Polkadot Account",
+    );
+
     // Save to chrome storage
     try {
       await setPolkadotProfile({ address, name: name || "Polkadot Account" });
       setStatusMessage("Polkadot account connected successfully.", "success");
       await updateAuthUI();
     } catch (err) {
-      setStatusMessage("Failed to save Polkadot account.", "error", err.message);
+      setStatusMessage(
+        "Failed to save Polkadot account.",
+        "error",
+        err.message,
+      );
       console.error("[popup] Polkadot connection error:", err);
     }
   });
@@ -506,7 +551,10 @@ entryForm.addEventListener("submit", async (e) => {
         name: polkadotProfile.name || "Polkadot User",
       };
     } else {
-      createdBy = { type: "polkadot", address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY" }; // Default mock address
+      createdBy = {
+        type: "polkadot",
+        address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      }; // Default mock address
     }
   }
   const isLargeFile = bytes && bytes.length > LARGE_FILE_THRESHOLD;
@@ -615,7 +663,7 @@ downloadZipBtn.addEventListener("click", () => {
     statusDiv.style.color = "#c62828";
     return;
   }
-  
+
   const codexId = getCodexIdFromEntry();
   const url = URL.createObjectURL(currentZipBlob);
   const a = document.createElement("a");

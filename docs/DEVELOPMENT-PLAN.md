@@ -1,5 +1,7 @@
 # Lockb0x Codex Forge — Development Plan (Polkadot Anchor Fork)
 
+> **Changelog:** Development milestones and QA criteria now documented in [agent-workplan.md](./agent-workplan.md)—see that document for complete technical direction and implementation details.
+
 ## Project Goal
 
 Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring, specifically integrating the Polkadot blockchain alongside the original Google Drive backend.
@@ -9,6 +11,7 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## Current Status & Milestones (Updated 2025-11-05)
 
 ### Completed Features ✓
+
 - Lockb0x Protocol Core: UUIDv4 generation, SHA-256 hashing, ni-URI encoding, RFC canonicalization, ES256 signing.
 - Codex Entry workflow: upload, hash/sign, anchor, export, schema validation.
 - Zip Archive workflow: encrypted archive, provenance comment, dual signature.
@@ -18,6 +21,7 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ---
 
 ### Not Implemented ✗
+
 - Chrome Built-In AI: (experimental).
 - Full Polkadot extrinsic signing: Next milestone for blockchain anchoring; currently, RPC submissions are used for integrity proofs. Full extrinsics will require @polkadot/api integration.
 
@@ -40,8 +44,11 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## Roadmap & Remaining Gaps
 
 ### Phase 1: Zip Archive Implementation (Complete ✓)
+
 ### Phase 2: Code Quality & Testing (Current)
+
 ### Phase 3: **Multi-Chain Production Polish (Next)**
+
 - Marketplace polish.
 - Security audit.
 - **Polkadot anchor upgrade: signed extrinsic submission, advanced identity capture, UI/UX improvements.**
@@ -52,13 +59,16 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## Unified Implementation Checklist
 
 ### Core Features (Complete ✓)
+
 - File upload, schema validation, export, zip archive creation/encryption, Google/Mock/Polkadot anchor support.
 - Multi-anchor support in Codex Entries; account info for both Google and Polkadot.
 
 ### Documentation (In Progress)
+
 - README and /docs reflect fork status and multi-chain anchor integration.
 
 ### Code Quality
+
 - Further linting and extrinsic tests needed for blockchain flows.
 
 ---
@@ -66,6 +76,7 @@ Extend the Lockb0x Codex Forge Chrome Extension to support multi-chain anchoring
 ## Technical Milestones
 
 ### Blockchain Anchor Integration
+
 - Integrate `anchorPolkadot(entry, polkadotAccount)` (see [polkadot-enhancement.md](./polkadot-enhancement.md)) with RPC and future extrinsic support.
 - Update background.js, protocol.js, and popup.js to support anchor type option, account storage, finalized Codex Entry building, and UI feedback.
 
@@ -80,3 +91,5 @@ Refer to [AGENTS.md](./AGENTS.md) for updated roles covering both Google and Pol
 ## Reference and Contributor Onboarding
 
 For all architectural, workflow, and UI code enhancements regarding the Polkadot blockchain anchor, see and follow [polkadot-enhancement.md](./polkadot-enhancement.md).
+
+For complete agent-driven workflow documentation, implementation milestones, QA criteria, and collaborative development patterns, see [agent-workplan.md](./agent-workplan.md).

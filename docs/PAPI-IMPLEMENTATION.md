@@ -40,6 +40,7 @@ The Polkadot anchor implementation uses the modern Polkadot API (PAPI) with Smol
 ### Key Features
 
 #### 1. Decentralized Connectivity
+
 ```javascript
 const { createClient } = await import("polkadot-api");
 const { getSmProvider } = await import("polkadot-api/sm-provider");
@@ -52,18 +53,21 @@ const client = createClient(getSmProvider(chain));
 ```
 
 #### 2. Real Blockchain Data Retrieval
+
 ```javascript
 const finalizedBlock = await getFinalizedBlockWithTimeout(client, timeout);
 // Returns: { hash: "0x...", number: 123456 }
 ```
 
 #### 3. Proper Resource Cleanup
+
 - Unsubscribes from observables
 - Clears timeouts
 - Terminates Smoldot instances
 - Prevents memory leaks
 
 #### 4. Environment-Aware Timeouts
+
 - Test mode: 2 seconds (`NODE_ENV=test` or `PAPI_TEST_MODE=true`)
 - Production mode: 8 seconds
 - Prevents test suite from hanging
@@ -83,6 +87,7 @@ NODE_ENV=test npm test -- lib/protocol.test.js lib/polkadot-utils.test.js
 ### Expected Test Output
 
 When tests run, you should see:
+
 ```
 stdout | lib/polkadot-utils.test.js > ...
 [smoldot] Smoldot v2.0.39
@@ -92,6 +97,7 @@ stdout | lib/polkadot-utils.test.js > ...
 ```
 
 This indicates:
+
 1. ✅ Smoldot light client initialized successfully
 2. ✅ Connected to Polkadot relay chain
 3. ⏱️ Timed out waiting for finalized block (expected in test mode)
@@ -102,6 +108,7 @@ This indicates:
 To test with real blockchain connectivity:
 
 1. **Set longer timeout:**
+
    ```bash
    # Don't set NODE_ENV=test or PAPI_TEST_MODE
    npm test -- lib/polkadot-utils.test.js
@@ -131,6 +138,7 @@ To test with real blockchain connectivity:
 ### Configuration
 
 Environment variables:
+
 - `NODE_ENV=test`: Enables test mode with 2s timeout
 - `PAPI_TEST_MODE=true`: Alternative way to enable test mode
 
@@ -159,7 +167,7 @@ Environment variables:
 // Example: Future transaction signing
 const api = client.getTypedApi(dot);
 const tx = api.tx.System.remark({
-  remark: anchorPayload
+  remark: anchorPayload,
 });
 
 const signed = await tx.sign(account, signer);
@@ -172,24 +180,29 @@ const txHash = result.txHash;
 ### Common Issues
 
 **Issue: Tests timeout**
+
 - **Cause**: Network connectivity issues or slow chain sync
 - **Solution**: Ensure `NODE_ENV=test` is set for faster timeout
 
 **Issue: "PAPI light client not available"**
+
 - **Cause**: polkadot-api packages not installed
 - **Solution**: Run `npm install` to install dependencies
 
 **Issue: Smoldot doesn't initialize**
+
 - **Cause**: WebAssembly not supported or blocked
 - **Solution**: Check browser console for errors, ensure modern browser
 
 **Issue: Memory leaks in tests**
+
 - **Cause**: Subscriptions or timeouts not cleaned up
 - **Solution**: Verify `subscription.unsubscribe()` and `clearTimeout()` are called
 
 ### Debug Mode
 
 Enable verbose logging:
+
 ```javascript
 // In polkadot-utils.js, add:
 console.log("[Polkadot] Client created:", client);
@@ -206,9 +219,11 @@ console.log("[Polkadot] Finalized block:", finalizedBlock);
 ## Security
 
 ### CodeQL Scan Results
+
 ✅ No security vulnerabilities detected
 
 ### Security Features
+
 - No private keys stored in extension
 - No centralized RPC dependencies
 - Verifiable blockchain data via light client
@@ -224,6 +239,7 @@ console.log("[Polkadot] Finalized block:", finalizedBlock);
 ## Contributing
 
 When modifying the PAPI implementation:
+
 1. Ensure proper resource cleanup (subscriptions, timeouts, Smoldot)
 2. Test both success and timeout paths
 3. Verify no memory leaks with long-running tests

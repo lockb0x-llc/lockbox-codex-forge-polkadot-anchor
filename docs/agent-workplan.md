@@ -5,6 +5,7 @@
 This document outlines the complete agent-driven workflow for the Lockb0x Codex Forge Chrome Extension, including the extended capabilities for Google Drive file upload, codex preloading, and Polkadot blockchain anchoring from the popup interface (index.html/popup.html).
 
 **Document Purpose:**
+
 - Provide technical direction for agent-driven development and maintenance
 - Define implementation milestones and QA criteria for the extended workflow
 - Ensure collaborative team and agent-driven maintenance patterns
@@ -31,10 +32,12 @@ The extension supports three anchor types, each providing different levels of pr
 ### Phase 1: Content Selection (Step 1)
 
 **User Actions:**
+
 - Upload a file via file input (supports: text, PDF, JSON, binary, images, documents, archives)
 - OR extract content from current web page via "Extract Page Content" button
 
 **Technical Implementation:**
+
 - File upload handled by `popup.js` → `background.js` message passing
 - Page extraction uses Chrome tabs API and content extraction utilities
 - Large files (>4MB) use chunked upload strategy
@@ -45,11 +48,13 @@ The extension supports three anchor types, each providing different levels of pr
 ### Phase 2: Anchor Selection (Step 2)
 
 **User Actions:**
+
 - Select anchor type from dropdown: Mock, Google, or Polkadot
 - If Google: Click "Sign in with Google" → OAuth flow → token persistence
 - If Polkadot: Click "Connect Polkadot Account" → enter address/name → profile storage
 
 **Technical Implementation:**
+
 - Anchor type selection stored in `anchorType` dropdown value
 - Google authentication via `lib/google-auth-utils.js`
   - OAuth flow with Chrome identity API
@@ -68,6 +73,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Phase 3: Codex Entry Generation (Step 3)
 
 **User Actions:**
+
 - Click "Generate Codex Entry" button
 - Wait for processing (loading indicator shown)
 - Review results: entry details, schema validation, anchor confirmation
@@ -75,6 +81,7 @@ The extension supports three anchor types, each providing different levels of pr
 **Technical Implementation:**
 
 #### 3.1 Protocol Operations (lib/protocol.js)
+
 - **UUID Generation:** UUIDv4 for unique entry identifier
 - **Hashing:** SHA-256 hash of file content
 - **ni-URI Encoding:** Named Information URI format for content addressing
@@ -82,6 +89,7 @@ The extension supports three anchor types, each providing different levels of pr
 - **ES256 Signing:** Cryptographic signature generation with JWK
 
 #### 3.2 Zip Archive Creation (lib/zip-archive.js)
+
 - Encrypt payload and codex entry into zip archive
 - Password derived from user identity:
   - Google: user email address
@@ -96,12 +104,14 @@ The extension supports three anchor types, each providing different levels of pr
 #### 3.3 Anchor Processing (background.js)
 
 **Mock Anchor Flow:**
+
 - Generate deterministic mock anchor locally
 - No external API calls
 - Immediate completion
 - Returns: `{ chain: "mock", tx: "mock-tx-...", timestamp, ... }`
 
 **Google Drive Anchor Flow:**
+
 - Upload zip archive to Google Drive via REST API
 - Create anchor file with metadata
 - Retrieve file ID and shareable link
@@ -110,6 +120,7 @@ The extension supports three anchor types, each providing different levels of pr
 - See: `lib/google-drive.js`, `background.js`
 
 **Polkadot Blockchain Anchor Flow (PAPI):**
+
 - Initialize Smoldot light client (WebAssembly-based)
 - Connect to Polkadot relay chain (decentralized, no RPC required)
 - Retrieve finalized block hash and number from real chain
@@ -122,6 +133,7 @@ The extension supports three anchor types, each providing different levels of pr
 - See: `lib/polkadot-utils.js`, `lib/protocol.js`, `docs/PAPI-IMPLEMENTATION.md`, `docs/polkadot-enhancement.md`
 
 #### 3.4 Identity Integration (createdBy)
+
 - **Mock:** `{ type: "mock" }`
 - **Google:** `{ type: "google", email: "...", name: "...", picture: "..." }`
 - **Polkadot:** `{ type: "polkadot", address: "...", name: "..." }`
@@ -133,6 +145,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Phase 4: Export and Validation (Step 4)
 
 **User Actions:**
+
 - Download codex entry as JSON
 - Download encrypted zip archive
 - Copy codex entry to clipboard
@@ -141,6 +154,7 @@ The extension supports three anchor types, each providing different levels of pr
 - View anchor details and explorer links (Polkadot)
 
 **Technical Implementation:**
+
 - Schema validation against lockb0x schema v0.0.2
 - JSON export with proper formatting
 - Zip download via blob URL
@@ -154,6 +168,7 @@ The extension supports three anchor types, each providing different levels of pr
 ## Implementation Milestones
 
 ### Milestone 1: Core Protocol (✓ Complete)
+
 - [x] UUID generation (UUIDv4)
 - [x] SHA-256 hashing
 - [x] ni-URI encoding
@@ -162,6 +177,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [x] Schema validation (v0.0.2)
 
 ### Milestone 2: Legacy Anchor Support (✓ Complete)
+
 - [x] Mock anchor implementation
 - [x] Google Drive OAuth integration
 - [x] Google Drive file upload
@@ -170,6 +186,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [x] Drive file existence validation
 
 ### Milestone 3: Zip Archive Workflow (✓ Complete)
+
 - [x] Zip creation with JSZip
 - [x] Password-based encryption
 - [x] Archive-level provenance comments
@@ -178,6 +195,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [x] Large file chunking (>4MB)
 
 ### Milestone 4: Polkadot Blockchain Integration (✓ Complete - MVP)
+
 - [x] PAPI integration (v1.20.1)
 - [x] Smoldot light client (v2.0.39)
 - [x] Real blockchain connectivity (Polkadot relay chain)
@@ -194,6 +212,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] **Planned:** Real tx hash in anchor.tx field
 
 ### Milestone 5: UI/UX Polish (✓ Complete)
+
 - [x] Step-by-step workflow with fieldsets
 - [x] Anchor type selector
 - [x] Google Sign-In button
@@ -206,6 +225,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [x] Clipboard copy functionality
 
 ### Milestone 6: Testing Infrastructure (✓ Complete)
+
 - [x] Unit tests for all core modules
 - [x] Protocol tests (hashing, signing, canonicalization)
 - [x] Google auth tests
@@ -218,6 +238,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [x] Environment-aware timeouts (test vs production)
 
 ### Milestone 7: Documentation (✓ Complete)
+
 - [x] README.md with overview and usage
 - [x] AGENTS.md with team roles and status
 - [x] DEVELOPMENT-PLAN.md with roadmap
@@ -233,6 +254,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Functional Testing
 
 **Mock Anchor:**
+
 - [ ] Select Mock anchor type
 - [ ] Upload any file type
 - [ ] Generate codex entry
@@ -242,6 +264,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] Verify password is "mock"
 
 **Google Drive Anchor:**
+
 - [ ] Select Google anchor type
 - [ ] Sign in with Google (OAuth flow)
 - [ ] Verify auth status shows email
@@ -254,6 +277,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] Verify password is user email
 
 **Polkadot Blockchain Anchor:**
+
 - [ ] Select Polkadot anchor type
 - [ ] Click Connect Polkadot Account
 - [ ] Enter valid substrate address (47-48 chars)
@@ -275,6 +299,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Integration Testing
 
 **File Types:**
+
 - [ ] Text files (.txt, .md, .html, .csv)
 - [ ] JSON files (.json)
 - [ ] PDF files (.pdf)
@@ -285,18 +310,21 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] Binary files (arbitrary)
 
 **Large Files:**
+
 - [ ] Files < 1MB (direct upload)
 - [ ] Files 1-4MB (direct upload)
 - [ ] Files > 4MB (chunked upload)
 - [ ] Files > 10MB (stress test)
 
 **Schema Validation:**
+
 - [ ] Valid codex entry passes validation
 - [ ] Invalid entry shows error messages
 - [ ] Schema errors displayed in popup
 - [ ] User can review and fix issues
 
 **Error Handling:**
+
 - [ ] Network offline: graceful fallback for Polkadot
 - [ ] Invalid credentials: clear error for Google
 - [ ] Upload failure: retry instructions
@@ -306,6 +334,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Security Testing
 
 **Authentication:**
+
 - [ ] Google token stored securely in chrome.storage
 - [ ] Token refresh works correctly
 - [ ] Logout clears token
@@ -313,12 +342,14 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] No private keys stored locally
 
 **Cryptography:**
+
 - [ ] ES256 signatures verify correctly
 - [ ] SHA-256 hashes match content
 - [ ] Zip encryption works with correct password
 - [ ] Zip decryption fails with wrong password
 
 **Data Privacy:**
+
 - [ ] No sensitive data logged to console
 - [ ] No credentials in error messages
 - [ ] No PII leaked in URLs or requests
@@ -326,6 +357,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Performance Testing
 
 **Speed:**
+
 - [ ] Small files (<1MB): < 2 seconds total
 - [ ] Medium files (1-4MB): < 5 seconds total
 - [ ] Large files (>4MB): < 10 seconds total
@@ -333,6 +365,7 @@ The extension supports three anchor types, each providing different levels of pr
 - [ ] Polkadot anchor (offline): < 3 seconds (fallback)
 
 **Resource Usage:**
+
 - [ ] Memory usage stable (no leaks)
 - [ ] Smoldot cleanup after use
 - [ ] No orphaned timeouts or subscriptions
@@ -345,6 +378,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Collaborative Maintenance
 
 **Agent Roles:**
+
 1. **Protocol Agent:** Maintains core protocol logic, hashing, signing, canonicalization
 2. **Google Integration Agent:** Maintains OAuth, Drive API, token management
 3. **Polkadot Integration Agent:** Maintains PAPI, light client, anchor logic
@@ -353,6 +387,7 @@ The extension supports three anchor types, each providing different levels of pr
 6. **Documentation Agent:** Maintains all .md files, keeps docs in sync
 
 **Collaboration Guidelines:**
+
 - Each agent works within defined scope
 - Cross-references between docs maintained via relative links
 - Changes in one area trigger doc updates in related areas
@@ -361,6 +396,7 @@ The extension supports three anchor types, each providing different levels of pr
 ### Future Enhancement Workflow
 
 **Adding New Features:**
+
 1. Update this workplan with new milestone
 2. Reference affected modules and files
 3. Define QA criteria for new feature
@@ -370,6 +406,7 @@ The extension supports three anchor types, each providing different levels of pr
 7. Update changelog in all affected docs
 
 **Example: Adding Wallet Integration**
+
 - Milestone 8: Wallet Integration
   - Add Polkadot.js extension connector
   - Update UI with wallet selection
@@ -383,6 +420,7 @@ The extension supports three anchor types, each providing different levels of pr
 ## Code Location Reference
 
 ### Core Modules
+
 - **Protocol Logic:** `lib/protocol.js`
 - **Google Auth:** `lib/google-auth-utils.js`
 - **Google Drive:** `lib/google-drive.js`
@@ -393,22 +431,26 @@ The extension supports three anchor types, each providing different levels of pr
 - **Codex UI Utils:** `lib/codex-ui-utils.js`
 
 ### UI Components
+
 - **Popup HTML:** `popup/popup.html`
 - **Popup JS:** `popup/popup.js`
 - **Popup UI:** `popup/popup-ui.js`
 - **Popup CSS:** `popup/popup.css`
 
 ### Background Services
+
 - **Background Worker:** `background.js`
 - **Small File Handler:** (delegated from background.js)
 - **Large File Handler:** (delegated from background.js)
 
 ### Configuration
+
 - **Manifest Template:** `manifest.template.json`
 - **Manifest Builder:** `build-manifest.js`
 - **Environment Variables:** `.env` (from `.env.example`)
 
 ### Documentation
+
 - **Main README:** `README.md`
 - **Agent Workplan:** `docs/agent-workplan.md` (this file)
 - **Team Roles:** `docs/AGENTS.md`
@@ -422,6 +464,7 @@ The extension supports three anchor types, each providing different levels of pr
 ## Changelog and Version History
 
 **Version 1.0.0 (Current):**
+
 - Complete lockb0x protocol implementation
 - Google Drive anchor (legacy, fully functional)
 - Mock anchor (legacy, fully functional)
@@ -432,6 +475,7 @@ The extension supports three anchor types, each providing different levels of pr
 - Full documentation suite including this agent workplan
 
 **Planned Version 1.1.0:**
+
 - Polkadot wallet integration
 - Transaction signing
 - system.remark extrinsic submission
@@ -440,6 +484,7 @@ The extension supports three anchor types, each providing different levels of pr
 - Expanded test coverage for wallet scenarios
 
 **Planned Version 2.0.0:**
+
 - Multi-anchor support (multiple anchors per entry)
 - Additional blockchain support (Ethereum, Bitcoin)
 - Advanced metadata generation (when Chrome AI available)
@@ -453,6 +498,7 @@ The extension supports three anchor types, each providing different levels of pr
 This agent workplan provides the technical foundation for collaborative, agent-driven development of the Lockb0x Codex Forge Chrome Extension. The extended workflow seamlessly integrates Google Drive file upload, codex preloading, and Polkadot blockchain anchoring while preserving all legacy anchor options.
 
 **Key Takeaways:**
+
 - Three-tier anchor system: Mock (legacy), Google (legacy), Polkadot (new)
 - All flows are extensions, not replacements
 - Complete workflow: upload → authenticate → generate → export

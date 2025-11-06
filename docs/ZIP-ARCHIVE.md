@@ -36,6 +36,7 @@ The Zip Archive feature in this fork supports anchoring and validation on both G
 ## Verification Process
 
 To verify a Lockb0x Codex zip archive:
+
 - Extract using password.
 - Compare payload file and `codex-entry.json`; validate `anchors[]` array for Google and/or Polkadot details.
 - Review archive-level provenance comment.

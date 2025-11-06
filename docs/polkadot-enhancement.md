@@ -160,14 +160,19 @@ UI	Add “Polkadot” option + status display	popup.html, popup.js
 
 ⸻
 
-## ✅ Implementation Status (Updated)
+## ✅ Implementation Status (Updated - PAPI Integration)
 
-All planned features have been successfully implemented:
+All planned features have been successfully implemented with modern Polkadot API (PAPI):
 
-1. **✅ Anchor Adapter** - `anchorPolkadot()` moved to `protocol.js` with complete implementation
-   - Returns all required schema fields: chain, tx, hash_alg, timestamp
-   - Additional fields: blockHash, blockNumber, url (explorer link)
-   - Accepts both string addresses and account objects
+1. **✅ Anchor Adapter - PAPI Implementation** - `anchorPolkadot()` in `protocol.js` and `polkadot-utils.js`
+   - **Modern Implementation**: Uses Polkadot API (PAPI) v1.20.1 with Smoldot light client v2.0.39
+   - **Decentralized**: Connects to real Polkadot relay chain via light client (no RPC servers required)
+   - **Real Data**: Retrieves actual finalized block hash and block number from the blockchain
+   - **Graceful Fallback**: Falls back to deterministic mock mode when offline or connection times out
+   - **Timeout Handling**: 2 seconds in test mode, 8 seconds in production mode
+   - **Returns all required schema fields**: chain, tx, hash_alg, timestamp, blockHash, blockNumber, url
+   - **Accepts both string addresses and account objects**
+   - **Anchor Payload**: Prepared for future system.remark extrinsic submission with signing
 
 2. **✅ Identity Merge** - `createdBy` extended in popup.js to include Polkadot profile
    - Uses `getPolkadotProfile()` from polkadot-utils.js
@@ -189,14 +194,33 @@ All planned features have been successfully implemented:
    - `getPolkadotProfile()` retrieves stored profile
    - Full test coverage
 
-6. **✅ Testing** - All tests passing
+6. **✅ Testing** - All tests passing with PAPI integration
    - protocol.test.js validates anchorPolkadot return fields including url
-   - polkadot-utils.test.js validates profile storage functions
+   - polkadot-utils.test.js validates profile storage functions and PAPI anchoring
    - Tests verify both string and object account inputs
+   - Tests validate graceful fallback when PAPI connection times out
+   - Smoldot light client initialization verified in test output
 
-7. **✅ Documentation** - README.md updated with Polkadot usage instructions
+7. **✅ Documentation** - README.md and docs updated with PAPI usage instructions
    - Step-by-step guide for connecting Polkadot account
    - Explanation of anchor fields and explorer links
-   - Notes about current mock implementation and future upgrades
+   - Detailed PAPI implementation notes
+   - Notes about light client, timeout handling, and fallback behavior
+   - Future roadmap for extrinsic signing
 
-The Polkadot anchor integration is complete and ready for testing!
+**PAPI Technical Details:**
+- **Library**: polkadot-api@1.20.1 with @polkadot-api/descriptors
+- **Light Client**: Smoldot v2.0.39 (embedded WebAssembly)
+- **Chain**: Polkadot relay chain (polkadot)
+- **Connection**: Decentralized light client sync (no centralized RPC required)
+- **Fallback Strategy**: Attempts PAPI connection first, falls back to deterministic mock on timeout/error
+- **Cleanup**: Properly terminates Smoldot instance after use or on error
+
+**Next Steps for Full On-Chain Anchoring:**
+- Add wallet integration (e.g., Polkadot.js extension, Talisman, SubWallet)
+- Implement transaction signing with user's private key
+- Submit signed system.remark extrinsic with anchor payload
+- Wait for transaction inclusion and finalization
+- Return real transaction hash in anchor.tx field
+
+The Polkadot anchor integration now uses modern PAPI with real blockchain connectivity!
